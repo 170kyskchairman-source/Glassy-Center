@@ -1,0 +1,2579 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KawaiiTech OS // Pastel Cybernetics & Arcade</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Orbitron (Futuristic) & Quicksand (Cute/Legible) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for crisp icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tone.js for procedural cyber-cute sound effects (no external audio URLs) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cyber: ['Orbitron', 'sans-serif'],
+                        cute: ['Quicksand', 'sans-serif'],
+                    },
+                    colors: {
+                        lavenderBlush: '#FFF0F5',
+                        softPink: '#FFE4E9',
+                        pastelPink: '#FFB6C1',
+                        hotPink: '#FF69B4',
+                        deepRose: '#DB2777',
+                        cyberText: '#4A2535',
+                    },
+                    boxShadow: {
+                        'neon-pink': '0 0 15px rgba(255, 105, 180, 0.45), 0 0 30px rgba(255, 182, 193, 0.3)',
+                        'glass': '0 8px 32px 0 rgba(255, 105, 180, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Cyber-Pastel Styling & Keyframe Animations */
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #FFF0F5;
+            color: #4A2535;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(255, 182, 193, 0.35) 0%, transparent 40%),
+                radial-gradient(circle at 85% 75%, rgba(255, 105, 180, 0.2) 0%, transparent 45%),
+                linear-gradient(rgba(255, 182, 193, 0.18) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 182, 193, 0.18) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1.5px solid rgba(255, 255, 255, 0.95);
+        }
+
+        .glass-pink {
+            background: rgba(255, 240, 245, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255, 182, 193, 0.6);
+        }
+
+        /* Floating & Rotating Cyber Rings */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-14px) rotate(2deg); }
+        }
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes spinReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(255, 105, 180, 0.4); }
+            50% { box-shadow: 0 0 28px rgba(255, 105, 180, 0.8); }
+        }
+
+        .animate-float { animation: floatSlow 4.5s ease-in-out infinite; }
+        .animate-spin-slow { animation: spinSlow 24s linear infinite; }
+        .animate-spin-reverse { animation: spinReverse 18s linear infinite; }
+        .animate-pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
+
+        /* 3D Card Flip for Memory Game */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+
+        /* Quantum Bug Pop Animation */
+        @keyframes popUp {
+            0% { transform: translateY(100%) scale(0.5); opacity: 0; }
+            70% { transform: translateY(-8%) scale(1.08); opacity: 1; }
+            100% { transform: translateY(0%) scale(1); opacity: 1; }
+        }
+        .bug-pop {
+            animation: popUp 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #FFF0F5; }
+        ::-webkit-scrollbar-thumb { background: #FFB6C1; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FF69B4; }
+
+        /* Sparkle Particle Canvas */
+        #sparkle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 40;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-hotPink selection:text-white">
+
+    <!-- Interactive Sparkle Particle Canvas -->
+    <canvas id="sparkle-canvas"></canvas>
+
+    <!-- Custom Toast / Message Notification (Replaces alert()) -->
+    <div id="cyber-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="glass-panel px-5 py-3.5 rounded-2xl shadow-neon-pink border-2 border-hotPink flex items-center gap-3">
+            <span id="toast-icon" class="text-xl">✨</span>
+            <div>
+                <p id="toast-title" class="font-cyber text-xs font-bold text-hotPink uppercase tracking-wider">System Notice</p>
+                <p id="toast-msg" class="text-sm font-semibold text-cyberText">Action completed!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         1. STICKY NAVIGATION BAR
+    ========================================================== -->
+    <header class="sticky top-0 z-40 px-4 pt-3 pb-2">
+        <nav class="max-w-6xl mx-auto glass-panel rounded-full px-5 py-3 shadow-glass flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#home" class="flex items-center gap-2.5 group">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-hotPink to-pastelPink flex items-center justify-center text-white shadow-neon-pink group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-cat text-lg"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-cyber font-black text-base sm:text-lg tracking-wider bg-gradient-to-r from-hotPink to-deepRose bg-clip-text text-transparent">
+                        KAWAII<span class="text-cyberText">TECH</span>
+                    </span>
+                    <span class="text-[10px] font-bold tracking-widest text-hotPink uppercase -mt-1">OS v4.2 // NYA</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <ul class="hidden md:flex items-center gap-2">
+                <li><a href="#home" data-nav="home" class="nav-link active px-4 py-2 rounded-full text-sm font-bold transition-all bg-hotPink text-white shadow-neon-pink">Home</a></li>
+                <li><a href="#gadgets" data-nav="gadgets" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-cyberText hover:bg-softPink hover:text-hotPink transition-all">Tech Lab</a></li>
+                <li><a href="#arcade" data-nav="arcade" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-cyberText hover:bg-softPink hover:text-hotPink transition-all">Cyber Arcade</a></li>
+                <li><a href="#ai-buddy" data-nav="ai-buddy" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-cyberText hover:bg-softPink hover:text-hotPink transition-all">A.I. Meow-Bot</a></li>
+                <li><a href="#contact" data-nav="contact" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-cyberText hover:bg-softPink hover:text-hotPink transition-all">Sync</a></li>
+            </ul>
+
+            <!-- Interactive Controls: Sparkle Toggle + Sound Toggle + Mobile Menu -->
+            <div class="flex items-center gap-2">
+                <button id="sparkle-toggle" onclick="toggleSparkles()" title="Toggle Sparkle Field" class="p-2.5 rounded-full bg-white border border-pastelPink text-hotPink hover:bg-hotPink hover:text-white transition-all shadow-sm">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+                <button id="sound-toggle" onclick="toggleSound()" title="Toggle Cyber Audio" class="p-2.5 rounded-full bg-white border border-pastelPink text-hotPink hover:bg-hotPink hover:text-white transition-all shadow-sm">
+                    <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+                </button>
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-full bg-hotPink text-white shadow-neon-pink">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Dropdown Nav -->
+        <div id="mobile-menu" class="hidden md:hidden max-w-6xl mx-auto mt-2 glass-panel rounded-3xl p-4 shadow-glass">
+            <ul class="flex flex-col gap-2 text-center">
+                <li><a href="#home" onclick="toggleMobileMenu()" class="block py-2.5 rounded-2xl font-bold text-cyberText hover:bg-softPink hover:text-hotPink">Home / Core</a></li>
+                <li><a href="#gadgets" onclick="toggleMobileMenu()" class="block py-2.5 rounded-2xl font-bold text-cyberText hover:bg-softPink hover:text-hotPink">Kawaii Tech Lab</a></li>
+                <li><a href="#arcade" onclick="toggleMobileMenu()" class="block py-2.5 rounded-2xl font-bold text-cyberText hover:bg-softPink hover:text-hotPink">Cyber Arcade</a></li>
+                <li><a href="#ai-buddy" onclick="toggleMobileMenu()" class="block py-2.5 rounded-2xl font-bold text-cyberText hover:bg-softPink hover:text-hotPink">A.I. Meow-Bot</a></li>
+                <li><a href="#contact" onclick="toggleMobileMenu()" class="block py-2.5 rounded-2xl font-bold text-cyberText hover:bg-softPink hover:text-hotPink">Neural Sync</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 space-y-24 pb-20 pt-6">
+
+        <!-- =========================================================
+             2. HERO SECTION WITH FLOATING CYBER ANIMATIONS & STATS
+        ========================================================== -->
+        <section id="home" class="scroll-mt-28 pt-4">
+            <div class="glass-panel rounded-[2.5rem] p-6 sm:p-12 shadow-glass relative overflow-hidden">
+                <!-- Decorative Background Glow Blobs -->
+                <div class="absolute -top-20 -right-20 w-72 h-72 bg-pastelPink/40 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-20 w-80 h-80 bg-hotPink/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+                    <!-- Left Hero Copy -->
+                    <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-pastelPink shadow-sm">
+                            <span class="w-2.5 h-2.5 rounded-full bg-hotPink animate-ping"></span>
+                            <span class="font-cyber text-xs font-bold tracking-widest text-hotPink uppercase">Quantum Pastel Network Online</span>
+                        </div>
+
+                        <h1 class="font-cyber text-3xl sm:text-5xl lg:text-6xl font-black leading-tight text-cyberText">
+                            Future Tech, <br>
+                            <span class="bg-gradient-to-r from-hotPink via-pink-500 to-rose-400 bg-clip-text text-transparent">
+                                Ultra-Cute Core.
+                            </span>
+                        </h1>
+
+                        <p class="text-base sm:text-lg font-medium text-cyberText/80 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                            Welcome to <strong class="text-hotPink">KawaiiTech OS</strong>—where next-generation quantum robotics, holographic wearables, and wholesome A.I. companions live in soft pink harmony.
+                        </p>
+
+                        <!-- CTA Buttons -->
+                        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                            <a href="#arcade" onclick="playChime('powerup')" class="px-7 py-3.5 rounded-full bg-gradient-to-r from-hotPink to-pink-500 text-white font-cyber text-sm font-bold tracking-wider shadow-neon-pink hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-gamepad"></i> PLAY CYBER ARCADE
+                            </a>
+                            <a href="#gadgets" onclick="playChime('click')" class="px-7 py-3.5 rounded-full bg-white text-hotPink border-2 border-pastelPink font-cyber text-sm font-bold tracking-wider hover:bg-softPink hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-microchip"></i> EXPLORE TECH LAB
+                            </a>
+                        </div>
+
+                        <!-- Interactive Stat Counters -->
+                        <div class="grid grid-cols-3 gap-3 sm:gap-5 pt-4">
+                            <div onclick="boostStat('stat-cuteness', 99.9)" class="cursor-pointer glass-pink rounded-2xl p-3.5 text-center hover:border-hotPink transition-all group">
+                                <p class="font-cyber text-xl sm:text-2xl font-black text-hotPink group-hover:scale-110 transition-transform"><span id="stat-cuteness" data-target="99.9">0</span>%</p>
+                                <p class="text-xs font-bold text-cyberText/75 uppercase tracking-wide mt-0.5">Kawaii Purity</p>
+                            </div>
+                            <div onclick="boostStat('stat-qubits', 4096)" class="cursor-pointer glass-pink rounded-2xl p-3.5 text-center hover:border-hotPink transition-all group">
+                                <p class="font-cyber text-xl sm:text-2xl font-black text-hotPink group-hover:scale-110 transition-transform"><span id="stat-qubits" data-target="4096">0</span></p>
+                                <p class="text-xs font-bold text-cyberText/75 uppercase tracking-wide mt-0.5">Nyan-Qubits</p>
+                            </div>
+                            <div onclick="boostStat('stat-bots', 128)" class="cursor-pointer glass-pink rounded-2xl p-3.5 text-center hover:border-hotPink transition-all group">
+                                <p class="font-cyber text-xl sm:text-2xl font-black text-hotPink group-hover:scale-110 transition-transform"><span id="stat-bots" data-target="128">0</span>K</p>
+                                <p class="text-xs font-bold text-cyberText/75 uppercase tracking-wide mt-0.5">Active Meow-Bots</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Hero Mascot Hologram -->
+                    <div class="lg:col-span-5 flex items-center justify-center relative py-6">
+                        <div class="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center">
+                            <!-- Outer Rotating Cyber Ring -->
+                            <div class="absolute inset-0 rounded-full border-2 border-dashed border-hotPink/60 animate-spin-slow"></div>
+                            <!-- Middle Counter-Rotating Ring -->
+                            <div class="absolute inset-4 rounded-full border-2 border-pastelPink animate-spin-reverse"></div>
+                            <!-- Inner Glowing Core -->
+                            <div class="w-48 h-48 sm:w-56 sm:h-56 rounded-full bg-gradient-to-b from-white to-softPink border-4 border-white shadow-neon-pink flex flex-col items-center justify-center animate-float relative cursor-pointer" onclick="petMascot()">
+                                <!-- Custom Cute Cyber-Cat SVG Mascot -->
+                                <svg class="w-32 h-32 sm:w-36 sm:h-36 drop-shadow-md" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Cyber Ears -->
+                                    <path d="M45 85 L35 30 L82 58 Z" fill="#FFB6C1" stroke="#FF69B4" stroke-width="5" stroke-linejoin="round"/>
+                                    <path d="M155 85 L165 30 L118 58 Z" fill="#FFB6C1" stroke="#FF69B4" stroke-width="5" stroke-linejoin="round"/>
+                                    <path d="M48 76 L43 44 L72 60 Z" fill="#FFF0F5"/>
+                                    <path d="M152 76 L157 44 L128 60 Z" fill="#FFF0F5"/>
+                                    <!-- Antenna Heart -->
+                                    <line x1="100" y1="48" x2="100" y2="24" stroke="#FF69B4" stroke-width="4" stroke-linecap="round"/>
+                                    <circle cx="100" cy="20" r="7" fill="#FF69B4"/>
+                                    <!-- Head Chassis -->
+                                    <rect x="36" y="52" width="128" height="106" rx="52" fill="#FFFFFF" stroke="#FF69B4" stroke-width="5"/>
+                                    <!-- Holographic Visor Screen -->
+                                    <rect x="52" y="74" width="96" height="52" rx="24" fill="#FFF0F5" stroke="#FFB6C1" stroke-width="3"/>
+                                    <!-- Happy Digital Eyes -->
+                                    <path d="M68 98 Q78 86 88 98" stroke="#FF69B4" stroke-width="5" stroke-linecap="round" fill="none"/>
+                                    <path d="M112 98 Q122 86 132 98" stroke="#FF69B4" stroke-width="5" stroke-linecap="round" fill="none"/>
+                                    <!-- Rosy LED Cheeks -->
+                                    <ellipse cx="66" cy="112" rx="8" ry="4" fill="#FFB6C1"/>
+                                    <ellipse cx="134" cy="112" rx="8" ry="4" fill="#FFB6C1"/>
+                                    <!-- Cute Kitty Mouth -->
+                                    <path d="M92 112 Q96 118 100 112 Q104 118 108 112" stroke="#FF69B4" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+                                    <!-- Bow Tie -->
+                                    <path d="M84 162 L100 154 L100 170 Z" fill="#FF69B4"/>
+                                    <path d="M116 162 L100 154 L100 170 Z" fill="#FF69B4"/>
+                                    <circle cx="100" cy="162" r="5" fill="#FFF0F5"/>
+                                </svg>
+                                <span class="text-[11px] font-cyber font-bold text-hotPink bg-white/90 px-3 py-0.5 rounded-full border border-pastelPink -mt-1">
+                                    TAP TO PAT ♥
+                                </span>
+                            </div>
+
+                            <!-- Floating Orbiting Badges -->
+                            <div class="absolute -top-2 right-4 glass-panel px-3 py-1.5 rounded-full shadow-sm border border-pastelPink flex items-center gap-1.5 animate-bounce">
+                                <span class="text-sm">🌸</span>
+                                <span class="font-cyber text-[10px] font-bold text-hotPink">AI-9000</span>
+                            </div>
+                            <div class="absolute bottom-2 -left-2 glass-panel px-3 py-1.5 rounded-full shadow-sm border border-pastelPink flex items-center gap-1.5 animate-pulse">
+                                <span class="text-sm">⚡</span>
+                                <span class="font-cyber text-[10px] font-bold text-hotPink">100% CUTE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             3. INTERACTIVE 'KAWAII TECH LAB' SHOWCASE SECTION
+        ========================================================== -->
+        <section id="gadgets" class="scroll-mt-28 space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <span class="inline-block px-4 py-1 rounded-full bg-white border border-pastelPink font-cyber text-xs font-bold text-hotPink uppercase tracking-widest">
+                    Hardware & Wearables
+                </span>
+                <h2 class="font-cyber text-2xl sm:text-4xl font-black text-cyberText">
+                    Kawaii <span class="text-hotPink">Tech Lab</span>
+                </h2>
+                <p class="text-sm sm:text-base font-medium text-cyberText/75">
+                    Inspect our latest pastel-engineered hardware prototypes. Click any gadget to launch its holographic blueprint & specs!
+                </p>
+            </div>
+
+            <!-- Gadget Cards Grid -->
+            <div id="gadget-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated dynamically via JavaScript for clean interactive modals -->
+            </div>
+        </section>
+
+        <!-- =========================================================
+             4. 'CYBER ARCADE' WITH TWO PLAYABLE MINI-GAMES
+        ========================================================== -->
+        <section id="arcade" class="scroll-mt-28 space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <span class="inline-block px-4 py-1 rounded-full bg-white border border-pastelPink font-cyber text-xs font-bold text-hotPink uppercase tracking-widest">
+                    Interactive Simulation Deck
+                </span>
+                <h2 class="font-cyber text-2xl sm:text-4xl font-black text-cyberText">
+                    Pastel <span class="text-hotPink">Cyber Arcade</span>
+                </h2>
+                <p class="text-sm sm:text-base font-medium text-cyberText/75">
+                    Train your neural reflexes with two built-in mini-games! Switch modules anytime.
+                </p>
+
+                <!-- Game Switcher Tabs -->
+                <div class="inline-flex p-1.5 rounded-full glass-panel shadow-sm border border-pastelPink mt-2">
+                    <button id="tab-memory" onclick="switchArcadeGame('memory')" class="px-5 py-2.5 rounded-full font-cyber text-xs sm:text-sm font-bold transition-all bg-hotPink text-white shadow-neon-pink">
+                        <i class="fa-solid fa-clone mr-1.5"></i> Cyber Cat Memory
+                    </button>
+                    <button id="tab-catcher" onclick="switchArcadeGame('catcher')" class="px-5 py-2.5 rounded-full font-cyber text-xs sm:text-sm font-bold transition-all text-cyberText hover:text-hotPink">
+                        <i class="fa-solid fa-bolt mr-1.5"></i> Quantum Bug Catcher
+                    </button>
+                </div>
+            </div>
+
+            <!-- GAME 1: CYBER CAT MEMORY MATCH -->
+            <div id="game-memory-container" class="glass-panel rounded-[2rem] p-6 sm:p-8 shadow-glass border-2 border-white">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6 border-b border-pastelPink/50">
+                    <div>
+                        <h3 class="font-cyber text-xl font-bold text-hotPink flex items-center gap-2">
+                            <span>🐱</span> Cyber Cat Memory Match
+                        </h3>
+                        <p class="text-xs sm:text-sm font-semibold text-cyberText/75">Pair all matching quantum icons in record time!</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="px-4 py-2 rounded-2xl bg-white border border-pastelPink text-center">
+                            <span class="block text-[10px] font-bold uppercase text-cyberText/60">Moves</span>
+                            <span id="mem-moves" class="font-cyber text-base font-black text-hotPink">0</span>
+                        </div>
+                        <div class="px-4 py-2 rounded-2xl bg-white border border-pastelPink text-center">
+                            <span class="block text-[10px] font-bold uppercase text-cyberText/60">Time</span>
+                            <span id="mem-timer" class="font-cyber text-base font-black text-hotPink">00:00</span>
+                        </div>
+                        <button onclick="initMemoryGame()" class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-hotPink to-pink-500 text-white font-cyber text-xs font-bold shadow-neon-pink hover:scale-105 active:scale-95 transition-all">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> RESET
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4x4 Memory Card Grid -->
+                <div id="memory-grid" class="grid grid-cols-4 gap-3 sm:gap-4 max-w-xl mx-auto pt-6">
+                    <!-- Cards generated by JS -->
+                </div>
+            </div>
+
+            <!-- GAME 2: QUANTUM BUG CATCHER (REFLEX WHACK-A-GLITCH) -->
+            <div id="game-catcher-container" class="hidden glass-panel rounded-[2rem] p-6 sm:p-8 shadow-glass border-2 border-white">
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-4 pb-6 border-b border-pastelPink/50">
+                    <div>
+                        <h3 class="font-cyber text-xl font-bold text-hotPink flex items-center gap-2">
+                            <span>🐰</span> Quantum Bug Catcher
+                        </h3>
+                        <p class="text-xs sm:text-sm font-semibold text-cyberText/75">Tap the glitch-bunnies (🐰) & pixel hearts (💖) before they warp! Avoid bombs (💣)!</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-center gap-2.5">
+                        <!-- Difficulty Selector -->
+                        <select id="catcher-difficulty" onchange="resetCatcherGame()" class="px-3.5 py-2 rounded-2xl bg-white border border-pastelPink font-cyber text-xs font-bold text-cyberText focus:outline-none focus:border-hotPink">
+                            <option value="easy">Chill Mode</option>
+                            <option value="normal" selected>Turbo Pink</option>
+                            <option value="hyper">Hyper Nyan</option>
+                        </select>
+
+                        <div class="px-3.5 py-1.5 rounded-2xl bg-white border border-pastelPink text-center">
+                            <span class="block text-[10px] font-bold uppercase text-cyberText/60">Score</span>
+                            <span id="catch-score" class="font-cyber text-base font-black text-hotPink">0</span>
+                        </div>
+                        <div class="px-3.5 py-1.5 rounded-2xl bg-white border border-pastelPink text-center">
+                            <span class="block text-[10px] font-bold uppercase text-cyberText/60">Combo</span>
+                            <span id="catch-combo" class="font-cyber text-base font-black text-deepRose">x1</span>
+                        </div>
+                        <div class="px-3.5 py-1.5 rounded-2xl bg-white border border-pastelPink text-center">
+                            <span class="block text-[10px] font-bold uppercase text-cyberText/60">Time</span>
+                            <span id="catch-timer" class="font-cyber text-base font-black text-hotPink">30s</span>
+                        </div>
+
+                        <button id="catch-start-btn" onclick="startCatcherGame()" class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-hotPink to-pink-500 text-white font-cyber text-xs font-bold shadow-neon-pink hover:scale-105 active:scale-95 transition-all">
+                            <i class="fa-solid fa-play mr-1"></i> START
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3x3 Holographic Portal Grid -->
+                <div id="catcher-grid" class="grid grid-cols-3 gap-3 sm:gap-5 max-w-md mx-auto pt-6">
+                    <!-- 9 Holographic Pods generated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             5. INTERACTIVE 'A.I. MEOW-BOT' CHAT ASSISTANT
+        ========================================================== -->
+        <section id="ai-buddy" class="scroll-mt-28 space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <span class="inline-block px-4 py-1 rounded-full bg-white border border-pastelPink font-cyber text-xs font-bold text-hotPink uppercase tracking-widest">
+                    Neural Companion v4.2
+                </span>
+                <h2 class="font-cyber text-2xl sm:text-4xl font-black text-cyberText">
+                    Chat with <span class="text-hotPink">A.I. Meow-Bot</span>
+                </h2>
+                <p class="text-sm sm:text-base font-medium text-cyberText/75">
+                    Ask our sentient pastel hologram for futuristic advice, tech fortunes, or wholesome cyber-wisdom!
+                </p>
+            </div>
+
+            <div class="max-w-3xl mx-auto glass-panel rounded-[2rem] shadow-glass border-2 border-white overflow-hidden">
+                <!-- Chat Header -->
+                <div class="bg-gradient-to-r from-hotPink to-pink-400 px-6 py-4 text-white flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-full bg-white text-hotPink flex items-center justify-center text-xl shadow-md">
+                            🤖
+                        </div>
+                        <div>
+                            <h3 class="font-cyber text-sm sm:text-base font-bold tracking-wide">MEOW-BOT // HOLO-CORE</h3>
+                            <p class="text-xs text-white/90 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-green-300 animate-pulse"></span> Online & Purring at 4.8 GHz
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="clearChat()" class="text-xs font-cyber bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full transition-all">
+                        Clear Log
+                    </button>
+                </div>
+
+                <!-- Chat Messages Viewport -->
+                <div id="chat-messages" class="h-80 overflow-y-auto p-5 space-y-4 bg-white/50">
+                    <!-- Initial Greeting -->
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 rounded-full bg-softPink border border-pastelPink flex items-center justify-center shrink-0 text-base">🐱</div>
+                        <div class="bg-white border border-pastelPink rounded-2xl rounded-tl-none px-4 py-3 shadow-sm max-w-[82%]">
+                            <p class="text-sm font-semibold text-cyberText">
+                                Konnichi-nya! ✨ I am <span class="text-hotPink font-bold">Meow-Bot</span>, your quantum pastel companion. Tap a quick prompt below or type a message to begin!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Preset Prompt Chips -->
+                <div class="px-5 py-2.5 bg-lavenderBlush/80 border-t border-pastelPink/50 flex items-center gap-2 overflow-x-auto">
+                    <span class="text-[11px] font-cyber font-bold text-hotPink shrink-0">PROMPTS:</span>
+                    <button onclick="sendQuickPrompt('Tell me my cyber fortune 🔮')" class="shrink-0 text-xs font-bold bg-white hover:bg-hotPink hover:text-white text-cyberText border border-pastelPink px-3 py-1.5 rounded-full transition-all">
+                        🔮 Cyber Fortune
+                    </button>
+                    <button onclick="sendQuickPrompt('Recommend a cute gadget 🎧')" class="shrink-0 text-xs font-bold bg-white hover:bg-hotPink hover:text-white text-cyberText border border-pastelPink px-3 py-1.5 rounded-full transition-all">
+                        🎧 Recommend Gadget
+                    </button>
+                    <button onclick="sendQuickPrompt('Give me a motivation boost 💖')" class="shrink-0 text-xs font-bold bg-white hover:bg-hotPink hover:text-white text-cyberText border border-pastelPink px-3 py-1.5 rounded-full transition-all">
+                        💖 Motivation Boost
+                    </button>
+                    <button onclick="sendQuickPrompt('Tell a robot cat joke 😹')" class="shrink-0 text-xs font-bold bg-white hover:bg-hotPink hover:text-white text-cyberText border border-pastelPink px-3 py-1.5 rounded-full transition-all">
+                        😹 Cyber Joke
+                    </button>
+                </div>
+
+                <!-- Input Bar -->
+                <form onsubmit="handleChatSubmit(event)" class="p-4 bg-white flex items-center gap-3 border-t border-pastelPink/50">
+                    <input id="chat-input" type="text" placeholder="Type a message to Meow-Bot..." autocomplete="off"
+                        class="flex-1 px-4 py-3 rounded-full bg-lavenderBlush border border-pastelPink text-sm font-semibold text-cyberText placeholder-cyberText/45 focus:outline-none focus:border-hotPink focus:ring-2 focus:ring-hotPink/20">
+                    <button type="submit" class="px-6 py-3 rounded-full bg-gradient-to-r from-hotPink to-pink-500 text-white font-cyber text-xs font-bold shadow-neon-pink hover:scale-105 active:scale-95 transition-all">
+                        SEND <i class="fa-solid fa-paper-plane ml-1"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             6. NEURAL SYNC / CONTACT & FOOTER
+        ========================================================== -->
+        <section id="contact" class="scroll-mt-28">
+            <div class="glass-panel rounded-[2rem] p-6 sm:p-10 shadow-glass border-2 border-white">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-4">
+                        <span class="inline-block px-4 py-1 rounded-full bg-white border border-pastelPink font-cyber text-xs font-bold text-hotPink uppercase tracking-widest">
+                            Join The Network
+                        </span>
+                        <h2 class="font-cyber text-2xl sm:text-3xl font-black text-cyberText">
+                            Sync With <span class="text-hotPink">KawaiiTech</span>
+                        </h2>
+                        <p class="text-sm font-medium text-cyberText/75 leading-relaxed">
+                            Subscribe to our quantum holo-bulletin for early beta access to pastel robotics, new arcade cartridges, and cute desktop companions.
+                        </p>
+                        <div class="flex items-center gap-3 pt-2">
+                            <a href="#home" onclick="showToast('Discord Portal', 'Connecting to KawaiiTech Holo-Lounge! ✨')" class="w-10 h-10 rounded-full bg-white border border-pastelPink text-hotPink hover:bg-hotPink hover:text-white flex items-center justify-center transition-all shadow-sm">
+                                <i class="fa-brands fa-discord"></i>
+                            </a>
+                            <a href="#home" onclick="showToast('GitHub Core', 'Open-source pastel shaders ready! 🌸')" class="w-10 h-10 rounded-full bg-white border border-pastelPink text-hotPink hover:bg-hotPink hover:text-white flex items-center justify-center transition-all shadow-sm">
+                                <i class="fa-brands fa-github"></i>
+                            </a>
+                            <a href="#home" onclick="showToast('Holo-Stream', 'Live cyber-synth radio tuned! 🎧')" class="w-10 h-10 rounded-full bg-white border border-pastelPink text-hotPink hover:bg-hotPink hover:text-white flex items-center justify-center transition-all shadow-sm">
+                                <i class="fa-brands fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <form onsubmit="handleSubscribe(event)" class="glass-pink rounded-3xl p-6 space-y-4">
+                        <div>
+                            <label class="block font-cyber text-xs font-bold text-hotPink uppercase mb-1.5">Cyber Handle / Name</label>
+                            <input type="text" required placeholder="e.g., PixelPrincess99" class="w-full px-4 py-2.5 rounded-2xl bg-white border border-pastelPink text-sm font-semibold focus:outline-none focus:border-hotPink">
+                        </div>
+                        <div>
+                            <label class="block font-cyber text-xs font-bold text-hotPink uppercase mb-1.5">Holo-Mail Address</label>
+                            <input type="email" required placeholder="you@kawaiitech.io" class="w-full px-4 py-2.5 rounded-2xl bg-white border border-pastelPink text-sm font-semibold focus:outline-none focus:border-hotPink">
+                        </div>
+                        <button type="submit" class="w-full py-3 rounded-2xl bg-gradient-to-r from-hotPink to-pink-500 text-white font-cyber text-xs font-bold tracking-wider shadow-neon-pink hover:scale-[1.02] active:scale-98 transition-all">
+                            ESTABLISH NEURAL LINK ✨
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Pastel Futuristic Footer -->
+    <footer class="glass-panel border-t border-pastelPink/60 py-8 px-4 text-center">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="text-lg">🌸</span>
+                <span class="font-cyber text-sm font-bold text-cyberText">KAWAII<span class="text-hotPink">TECH</span> OS</span>
+            </div>
+            <p class="text-xs font-semibold text-cyberText/70">
+                Engineered with 💖, Quantum Pastel Shaders & Pure Wholesomeness • © 2026
+            </p>
+            <a href="#home" class="text-xs font-cyber font-bold text-hotPink hover:underline">
+                BACK TO TOP ↑
+            </a>
+        </div>
+    </footer>
+
+    <!-- =========================================================
+         GADGET HOLOGRAPHIC MODAL
+    ========================================================== -->
+    <div id="gadget-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-cyberText/30 backdrop-blur-sm">
+        <div class="glass-panel max-w-lg w-full rounded-[2rem] p-6 sm:p-8 shadow-neon-pink border-2 border-white relative animate-float">
+            <button onclick="closeGadgetModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-softPink text-hotPink hover:bg-hotPink hover:text-white flex items-center justify-center transition-all">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-body" class="space-y-4">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         COMBINED JAVASCRIPT APPLICATION LOGIC
+    ========================================================== -->
+    <script>
+        /* -----------------------------------------------------------
+           1. AUDIO SYNTHESIZER (Tone.js - Cute Cyber Blips)
+        ----------------------------------------------------------- */
+        let soundEnabled = true;
+        let synth = null;
+
+        function initAudio() {
+            if (!synth && typeof Tone !== 'undefined') {
+                synth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "sine" },
+                    envelope: { attack: 0.01, decay: 0.15, sustain: 0.1, release: 0.3 }
+                }).toDestination();
+                synth.volume.value = -10;
+            }
+        }
+
+        function playChime(type = 'click') {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (Tone.context.state !== 'running') Tone.start();
+                const now = Tone.now();
+                if (type === 'click') {
+                    synth.triggerAttackRelease("C6", "32n", now);
+                } else if (type === 'match') {
+                    synth.triggerAttackRelease(["E5", "G5", "B5", "E6"], "16n", now);
+                } else if (type === 'powerup') {
+                    synth.triggerAttackRelease("C5", "32n", now);
+                    synth.triggerAttackRelease("E5", "32n", now + 0.06);
+                    synth.triggerAttackRelease("G5", "32n", now + 0.12);
+                    synth.triggerAttackRelease("C6", "16n", now + 0.18);
+                } else if (type === 'bonk') {
+                    synth.triggerAttackRelease("G3", "16n", now);
+                }
+            } catch (e) {
+                // Fallback silently if browser blocks audio before gesture
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            icon.className = soundEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark';
+            showToast('Audio Core', soundEnabled ? 'Cyber-chimes activated! 🎵' : 'Audio muted 🔇');
+        }
+
+        /* -----------------------------------------------------------
+           2. CUSTOM TOAST NOTIFICATIONS & NAVIGATION
+        ----------------------------------------------------------- */
+        let toastTimeout;
+        function showToast(title, message, icon = '✨') {
+            const toast = document.getElementById('cyber-toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-msg').textContent = message;
+            document.getElementById('toast-icon').textContent = icon;
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Scroll Spy for Active Navigation Links
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = 'home';
+            sections.forEach(sec => {
+                const top = window.scrollY;
+                const offset = sec.offsetTop - 160;
+                if (top >= offset) current = sec.getAttribute('id');
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('bg-hotPink', 'text-white', 'shadow-neon-pink');
+                link.classList.add('text-cyberText');
+                if (link.dataset.nav === current) {
+                    link.classList.add('bg-hotPink', 'text-white', 'shadow-neon-pink');
+                    link.classList.remove('text-cyberText');
+                }
+            });
+        });
+
+        /* -----------------------------------------------------------
+           3. HERO STATS & INTERACTIVE MASCOT
+        ----------------------------------------------------------- */
+        function animateStats() {
+            const counters = [
+                { id: 'stat-cuteness', end: 99.9, decimals: 1 },
+                { id: 'stat-qubits', end: 4096, decimals: 0 },
+                { id: 'stat-bots', end: 128, decimals: 0 }
+            ];
+            counters.forEach(item => {
+                const el = document.getElementById(item.id);
+                let start = 0;
+                const duration = 1400;
+                const stepTime = 25;
+                const steps = duration / stepTime;
+                const increment = item.end / steps;
+                const timer = setInterval(() => {
+                    start += increment;
+                    if (start >= item.end) {
+                        el.textContent = item.end.toFixed(item.decimals);
+                        clearInterval(timer);
+                    } else {
+                        el.textContent = start.toFixed(item.decimals);
+                    }
+                }, stepTime);
+            });
+        }
+
+        function boostStat(id, base) {
+            playChime('powerup');
+            const el = document.getElementById(id);
+            const current = parseFloat(el.textContent);
+            const boosted = id === 'stat-cuteness' ? Math.min(100, (current + 0.1)).toFixed(1) : Math.round(current + 12);
+            el.textContent = boosted;
+            showToast('Overclocked!', 'Quantum telemetry boosted! 💖', '⚡');
+        }
+
+        const mascotQuotes = [
+            "Purr-ogramming at 100% efficiency! 🐱✨",
+            "Headpats detected! Dopamine circuits charged! 💖",
+            "Did you know? Pink photons travel faster in KawaiiTech OS! 🌸",
+            "Nya~ Ready to beat the high score in the Cyber Arcade? 🎮"
+        ];
+        function petMascot() {
+            playChime('match');
+            const quote = mascotQuotes[Math.floor(Math.random() * mascotQuotes.length)];
+            showToast('Neko-Core v4.2', quote, '🐾');
+            spawnBurst(window.innerWidth / 2, window.innerHeight / 3);
+        }
+
+        /* -----------------------------------------------------------
+           4. KAWAII TECH LAB GADGETS & MODAL
+        ----------------------------------------------------------- */
+        const gadgetsData = [
+            {
+                id: 'neko-pods',
+                name: 'Neko-Beat Holo-Phones',
+                tag: 'Acoustic AI',
+                icon: '🎧',
+                power: '98% Noise Cancel',
+                desc: 'Cat-ear wireless headphones with adaptive mood-light emitters and spatial 8D pastel soundscapes.',
+                specs: ['Quantum Bluetooth 7.0', '48-Hour Solar Ribbon Battery', 'Real-time Meow Translator']
+            },
+            {
+                id: 'sakura-deck',
+                name: 'Sakura Pocket Cyberdeck',
+                tag: 'Quantum CPU',
+                icon: '💻',
+                power: '128 TFLOPS',
+                desc: 'Ultra-slim mechanical micro-terminal with marshmallow tactile switches and floating pink holographic display.',
+                specs: ['Cherry-Blossom Optical Keys', 'Zero-Latency Neural Link', 'Self-Cooling Cryo-Gel Chassis']
+            },
+            {
+                id: 'heart-drone',
+                name: 'Cupid-01 Companion Drone',
+                tag: 'Autonomous Bot',
+                icon: '🛸',
+                power: '360° LiDAR',
+                desc: 'Palm-sized levitating drone that follows you around, snaps aesthetic portraits, and projects mini lightshows.',
+                specs: ['Whisper-Quiet MagLev Thrusters', '4K Kawaii Filter Lens', 'Auto-Return Charging Nest']
+            },
+            {
+                id: 'visor-lens',
+                name: 'Prism-X Smart Visor',
+                tag: 'AR Optics',
+                icon: '🥽',
+                power: '16K Retina AR',
+                desc: 'Featherweight rose-tinted smart glasses overlaying real-time quest markers, translator bubbles, and sparkles.',
+                specs: ['Eye-Tracking Gesture UI', 'UV + Blue-Light Shield', 'Customizable HUD Themes']
+            },
+            {
+                id: 'tamago-core',
+                name: 'Tama-Cube Pocket Synth',
+                tag: 'Bio-Pet Core',
+                icon: '🧊',
+                power: 'Sentient AI',
+                desc: 'A translucent crystal cube housing a virtual cyber-pet that evolves based on your daily hydration and steps.',
+                specs: ['Haptic Purr Feedback', 'NFC Friend-Sync', '1,024 Pixel-Art Evolutions']
+            },
+            {
+                id: 'laser-wand',
+                name: 'Starlight Stylus Wand',
+                tag: 'Holo-Sculpting',
+                icon: '🪄',
+                power: 'Sub-mm Precision',
+                desc: 'Draw 3D neon-pink hard-light sculptures directly in mid-air with zero-gravity photonic ink.',
+                specs: ['Pressure-Sensitive Star Tip', 'Instant 3D Print Export', '16.8M Pastel Color Palette']
+            }
+        ];
+
+        function renderGadgets() {
+            const grid = document.getElementById('gadget-grid');
+            grid.innerHTML = gadgetsData.map(g => `
+                <div onclick="openGadgetModal('${g.id}')" class="cursor-pointer glass-panel rounded-3xl p-6 shadow-glass border-2 border-white hover:border-hotPink hover:-translate-y-1.5 transition-all group flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-full bg-softPink text-hotPink font-cyber text-[10px] font-bold uppercase tracking-wider">
+                                ${g.tag}
+                            </span>
+                            <span class="text-xs font-bold text-cyberText/60">${g.power}</span>
+                        </div>
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-white to-softPink border border-pastelPink flex items-center justify-center text-3xl mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                            ${g.icon}
+                        </div>
+                        <h3 class="font-cyber text-lg font-bold text-cyberText group-hover:text-hotPink transition-colors mb-2">
+                            ${g.name}
+                        </h3>
+                        <p class="text-sm font-medium text-cyberText/75 leading-relaxed">
+                            ${g.desc}
+                        </p>
+                    </div>
+                    <div class="pt-5 mt-4 border-t border-pastelPink/40 flex items-center justify-between text-xs font-cyber font-bold text-hotPink">
+                        <span>INSPECT BLUEPRINT</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openGadgetModal(id) {
+            playChime('powerup');
+            const g = gadgetsData.find(item => item.id === id);
+            if (!g) return;
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-2xl bg-softPink border-2 border-hotPink flex items-center justify-center text-4xl shadow-neon-pink">
+                        ${g.icon}
+                    </div>
+                    <div>
+                        <span class="px-3 py-0.5 rounded-full bg-hotPink text-white font-cyber text-[10px] font-bold uppercase">${g.tag}</span>
+                        <h3 class="font-cyber text-xl sm:text-2xl font-black text-cyberText mt-1">${g.name}</h3>
+                    </div>
+                </div>
+                <p class="text-sm font-semibold text-cyberText/80 leading-relaxed bg-white/80 p-4 rounded-2xl border border-pastelPink">
+                    ${g.desc}
+                </p>
+                <div>
+                    <h4 class="font-cyber text-xs font-bold text-hotPink uppercase tracking-wider mb-2">Quantum Specifications:</h4>
+                    <ul class="space-y-2">
+                        ${g.specs.map(s => `
+                            <li class="flex items-center gap-2 text-sm font-bold text-cyberText">
+                                <span class="text-hotPink">✦</span> ${s}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                <button onclick="closeGadgetModal(); showToast('Blueprint Saved', '${g.name} synced to your holo-inventory!', '${g.icon}')" class="w-full py-3 rounded-2xl bg-gradient-to-r from-hotPink to-pink-500 text-white font-cyber text-xs font-bold tracking-wider shadow-neon-pink hover:scale-[1.02] transition-all">
+                    EQUIP TO INVENTORY ✨
+                </button>
+            `;
+            const modal = document.getElementById('gadget-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeGadgetModal() {
+            playChime('click');
+            const modal = document.getElementById('gadget-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        /* -----------------------------------------------------------
+           5. CYBER ARCADE SWITCHER & GAME 1: MEMORY MATCH
+        ----------------------------------------------------------- */
+        function switchArcadeGame(game) {
+            playChime('click');
+            const memContainer = document.getElementById('game-memory-container');
+            const catchContainer = document.getElementById('game-catcher-container');
+            const tabMem = document.getElementById('tab-memory');
+            const tabCatch = document.getElementById('tab-catcher');
+
+            if (game === 'memory') {
+                memContainer.classList.remove('hidden');
+                catchContainer.classList.add('hidden');
+                tabMem.className = 'px-5 py-2.5 rounded-full font-cyber text-xs sm:text-sm font-bold transition-all bg-hotPink text-white shadow-neon-pink';
+                tabCatch.className = 'px-5 py-2.5 rounded-full font-cyber text-xs sm:text-sm font-bold transition-all text-cyberText hover:text-hotPink';
+            } else {
+                memContainer.classList.add('hidden');
+                catchContainer.classList.remove('hidden');
+                tabCatch.className = 'px-5 py-2.5 rounded-full font-cyber text-xs sm:text-sm font-bold transition-all bg-hotPink text-white shadow-neon-pink';
+                tabMem.className = 'px-5 py-2.5 rounded-full font-cyber text-xs sm:text-sm font-bold transition-all text-cyberText hover:text-hotPink';
+            }
+        }
+
+        const memoryIcons = ['🐱', '🤖', '💖', '🛸', '🎧', '🌸', '⚡', '💎'];
+        let memCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let memMoves = 0;
+        let memSeconds = 0;
+        let memTimerInterval = null;
+        let memLock = false;
+
+        function initMemoryGame() {
+            clearInterval(memTimerInterval);
+            memMoves = 0;
+            memSeconds = 0;
+            matchedPairs = 0;
+            flippedCards = [];
+            memLock = false;
+
+            document.getElementById('mem-moves').textContent = '0';
+            document.getElementById('mem-timer').textContent = '00:00';
+
+            const deck = [...memoryIcons, ...memoryIcons].sort(() => Math.random() - 0.5);
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = deck.map((icon, index) => `
+                <div onclick="flipMemoryCard(this, '${icon}')" data-icon="${icon}" class="mem-card aspect-square perspective-1000 cursor-pointer select-none">
+                    <div class="card-inner relative w-full h-full transform-style-3d">
+                        <!-- Card Front (Hidden Face) -->
+                        <div class="absolute inset-0 backface-hidden rounded-2xl bg-gradient-to-br from-hotPink to-pastelPink border-2 border-white shadow-sm flex items-center justify-center text-white text-xl sm:text-2xl font-cyber">
+                            ✦
+                        </div>
+                        <!-- Card Back (Revealed Icon) -->
+                        <div class="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl bg-white border-2 border-hotPink shadow-neon-pink flex items-center justify-center text-3xl sm:text-4xl">
+                            ${icon}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function flipMemoryCard(cardEl, icon) {
+            if (memLock || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+
+            // Start timer on first move
+            if (memMoves === 0 && flippedCards.length === 0 && memSeconds === 0 && !memTimerInterval) {
+                memTimerInterval = setInterval(() => {
+                    memSeconds++;
+                    const mins = String(Math.floor(memSeconds / 60)).padStart(2, '0');
+                    const secs = String(memSeconds % 60).padStart(2, '0');
+                    document.getElementById('mem-timer').textContent = `${mins}:${secs}`;
+                }, 1000);
+            }
+
+            playChime('click');
+            cardEl.classList.add('flipped');
+            cardEl.querySelector('.card-inner').classList.add('rotate-y-180');
+            flippedCards.push({ el: cardEl, icon });
+
+            if (flippedCards.length === 2) {
+                memMoves++;
+                document.getElementById('mem-moves').textContent = memMoves;
+                memLock = true;
+
+                const [first, second] = flippedCards;
+                if (first.icon === second.icon) {
+                    playChime('match');
+                    first.el.classList.add('matched');
+                    second.el.classList.add('matched');
+                    flippedCards = [];
+                    memLock = false;
+                    matchedPairs++;
+
+                    if (matchedPairs === memoryIcons.length) {
+                        clearInterval(memTimerInterval);
+                        memTimerInterval = null;
+                        setTimeout(() => {
+                            playChime('powerup');
+                            showToast('Memory Sync Complete!', `Cleared in ${memMoves} moves! 🏆`, '🎉');
+                        }, 300);
+                    }
+                } else {
+                    setTimeout(() => {
+                        first.el.classList.remove('flipped');
+                        first.el.querySelector('.card-inner').classList.remove('rotate-y-180');
+                        second.el.classList.remove('flipped');
+                        second.el.querySelector('.card-inner').classList.remove('rotate-y-180');
+                        flippedCards = [];
+                        memLock = false;
+                    }, 750);
+                }
+            }
+        }
+
+        /* -----------------------------------------------------------
+           6. GAME 2: QUANTUM BUG CATCHER
+        ----------------------------------------------------------- */
+        let catchScore = 0;
+        let catchCombo = 1;
+        let catchTimeLeft = 30;
+        let catchRunning = false;
+        let catchTimerId = null;
+        let catchSpawnId = null;
+
+        function renderCatcherPods() {
+            const grid = document.getElementById('catcher-grid');
+            grid.innerHTML = Array.from({ length: 9 }).map((_, idx) => `
+                <div onclick="whackPod(${idx})" id="pod-${idx}" class="aspect-square rounded-3xl bg-gradient-to-b from-white to-softPink border-2 border-pastelPink shadow-inner flex items-center justify-center relative overflow-hidden cursor-pointer select-none hover:border-hotPink transition-colors">
+                    <div class="w-3/4 h-3 bg-hotPink/20 rounded-full absolute bottom-3 blur-[1px]"></div>
+                    <span id="pod-entity-${idx}" class="text-4xl sm:text-5xl z-10"></span>
+                </div>
+            `).join('');
+        }
+
+        function resetCatcherGame() {
+            clearInterval(catchTimerId);
+            clearTimeout(catchSpawnId);
+            catchRunning = false;
+            catchScore = 0;
+            catchCombo = 1;
+            catchTimeLeft = 30;
+            document.getElementById('catch-score').textContent = '0';
+            document.getElementById('catch-combo').textContent = 'x1';
+            document.getElementById('catch-timer').textContent = '30s';
+            document.getElementById('catch-start-btn').innerHTML = '<i class="fa-solid fa-play mr-1"></i> START';
+            for (let i = 0; i < 9; i++) {
+                const entity = document.getElementById(`pod-entity-${i}`);
+                if (entity) {
+                    entity.textContent = '';
+                    entity.dataset.type = '';
+                }
+            }
+        }
+
+        function startCatcherGame() {
+            if (catchRunning) {
+                resetCatcherGame();
+                return;
+            }
+            resetCatcherGame();
+            playChime('powerup');
+            catchRunning = true;
+            document.getElementById('catch-start-btn').innerHTML = '<i class="fa-solid fa-stop mr-1"></i> STOP';
+
+            catchTimerId = setInterval(() => {
+                catchTimeLeft--;
+                document.getElementById('catch-timer').textContent = `${catchTimeLeft}s`;
+                if (catchTimeLeft <= 0) {
+                    const finalScore = catchScore;
+                    resetCatcherGame();
+                    playChime('match');
+                    showToast('Time Up!', `Final Quantum Score: ${finalScore} pts! 🌟`, '🏆');
+                }
+            }, 1000);
+
+            spawnQuantumEntity();
+        }
+
+        function spawnQuantumEntity() {
+            if (!catchRunning) return;
+            const diff = document.getElementById('catcher-difficulty').value;
+            const speed = diff === 'easy' ? 1100 : diff === 'normal' ? 800 : 580;
+
+            // Clear previous entities
+            for (let i = 0; i < 9; i++) {
+                const el = document.getElementById(`pod-entity-${i}`);
+                el.textContent = '';
+                el.dataset.type = '';
+                el.classList.remove('bug-pop');
+            }
+
+            const podIndex = Math.floor(Math.random() * 9);
+            const target = document.getElementById(`pod-entity-${podIndex}`);
+
+            const roll = Math.random();
+            if (roll < 0.62) {
+                target.textContent = '🐰';
+                target.dataset.type = 'bunny';
+            } else if (roll < 0.85) {
+                target.textContent = '💖';
+                target.dataset.type = 'heart';
+            } else {
+                target.textContent = '💣';
+                target.dataset.type = 'bomb';
+            }
+
+            void target.offsetWidth; // trigger reflow for animation
+            target.classList.add('bug-pop');
+
+            catchSpawnId = setTimeout(spawnQuantumEntity, speed);
+        }
+
+        function whackPod(idx) {
+            if (!catchRunning) return;
+            const target = document.getElementById(`pod-entity-${idx}`);
+            const type = target.dataset.type;
+            if (!type) return;
+
+            if (type === 'bunny') {
+                playChime('click');
+                catchScore += 10 * catchCombo;
+                catchCombo = Math.min(8, catchCombo + 1);
+            } else if (type === 'heart') {
+                playChime('match');
+                catchScore += 25 * catchCombo;
+                catchCombo = Math.min(8, catchCombo + 1);
+            } else if (type === 'bomb') {
+                playChime('bonk');
+                catchScore = Math.max(0, catchScore - 20);
+                catchCombo = 1;
+                showToast('Glitch Bomb!', 'Combo reset! Watch out for 💣', '💥');
+            }
+
+            target.textContent = '';
+            target.dataset.type = '';
+            document.getElementById('catch-score').textContent = catchScore;
+            document.getElementById('catch-combo').textContent = `x${catchCombo}`;
+        }
+
+        /* -----------------------------------------------------------
+           7. A.I. MEOW-BOT INTERACTIVE CHAT
+        ----------------------------------------------------------- */
+        const botKnowledge = [
+            { keys: ['fortune', 'future', 'predict'], reply: '🔮 Scanning your aura... Good news! A wave of creative breakthroughs and pastel luck is heading your way today, nya~!' },
+            { keys: ['gadget', 'recommend', 'tech', 'device'], reply: '🎧 I highly recommend the **Neko-Beat Holo-Phones** in our Tech Lab! They translate cat purrs into lo-fi synth beats!' },
+            { keys: ['motivation', 'boost', 'sad', 'tired', 'love'], reply: '💖 Remember: even the brightest quantum supercomputers need a recharge cycle! You are doing amazing, sparkling human! ✨' },
+            { keys: ['joke', 'funny', 'laugh'], reply: '😹 Why did the cyber-cat sit on the quantum router? Because it wanted to keep an eye on the *mouse* in every dimension!' },
+            { keys: ['game', 'arcade', 'play'], reply: '🎮 Try **Quantum Bug Catcher** on Hyper Nyan difficulty if you think your reflexes are faster than light-speed!' },
+            { keys: ['hello', 'hi', 'hey', 'nya'], reply: 'Konnichi-nya! 🌸 My neural circuits are always happy to chat with you!' }
+        ];
+
+        function appendChatMessage(sender, text) {
+            const container = document.getElementById('chat-messages');
+            const isUser = sender === 'user';
+            const msgHtml = isUser ? `
+                <div class="flex items-start justify-end gap-3">
+                    <div class="bg-gradient-to-r from-hotPink to-pink-500 text-white rounded-2xl rounded-tr-none px-4 py-3 shadow-sm max-w-[80%]">
+                        <p class="text-sm font-semibold">${escapeHtml(text)}</p>
+                    </div>
+                    <div class="w-9 h-9 rounded-full bg-white border border-pastelPink flex items-center justify-center shrink-0 text-sm">🌸</div>
+                </div>
+            ` : `
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-full bg-softPink border border-pastelPink flex items-center justify-center shrink-0 text-base">🐱</div>
+                    <div class="bg-white border border-pastelPink rounded-2xl rounded-tl-none px-4 py-3 shadow-sm max-w-[82%]">
+                        <p class="text-sm font-semibold text-cyberText">${text}</p>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', msgHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function generateBotReply(userText) {
+            const lower = userText.toLowerCase();
+            for (const entry of botKnowledge) {
+                if (entry.keys.some(k => lower.includes(k))) {
+                    return entry.reply;
+                }
+            }
+            const fallbacks = [
+                "✨ Processing through my 4,096 Nyan-Qubits... That sounds super futuristic! Tell me more, nya~!",
+                "🌸 My pastel sensors agree 100%! Have you checked out the holographic blueprints in the Tech Lab yet?",
+                "🤖 Beep-boop-purr! Logging that into the KawaiiTech central memory core! 💖"
+            ];
+            return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+        }
+
+        function sendQuickPrompt(promptText) {
+            playChime('click');
+            appendChatMessage('user', promptText);
+            setTimeout(() => {
+                playChime('match');
+                appendChatMessage('bot', generateBotReply(promptText));
+            }, 450);
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            input.value = '';
+            sendQuickPrompt(text);
+        }
+
+        function clearChat() {
+            playChime('click');
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-full bg-softPink border border-pastelPink flex items-center justify-center shrink-0 text-base">🐱</div>
+                    <div class="bg-white border border-pastelPink rounded-2xl rounded-tl-none px-4 py-3 shadow-sm max-w-[82%]">
+                        <p class="text-sm font-semibold text-cyberText">Memory cache cleared! ✨ Ready for fresh futuristic questions, nya~!</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleSubscribe(e) {
+            e.preventDefault();
+            playChime('powerup');
+            e.target.reset();
+            showToast('Neural Link Active!', 'Welcome to the KawaiiTech OS Insider Network! 💖', '🌸');
+        }
+
+        /* -----------------------------------------------------------
+           8. INTERACTIVE SPARKLE PARTICLE ENGINE
+        ----------------------------------------------------------- */
+        let sparklesEnabled = true;
+        const canvas = document.getElementById('sparkle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function createParticle(x, y, burst = false) {
+            const colors = ['#FF69B4', '#FFB6C1', '#FFC0CB', '#FFFFFF'];
+            return {
+                x,
+                y,
+                size: Math.random() * (burst ? 6 : 4) + 2,
+                speedX: (Math.random() - 0.5) * (burst ? 5 : 1.2),
+                speedY: (Math.random() - 0.5) * (burst ? 5 : 1.2) - 0.5,
+                alpha: 1,
+                color: colors[Math.floor(Math.random() * colors.length)]
+            };
+        }
+
+        function spawnBurst(x, y) {
+            if (!sparklesEnabled) return;
+            for (let i = 0; i < 18; i++) {
+                particles.push(createParticle(x, y, true));
+            }
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            if (sparklesEnabled && Math.random() < 0.35) {
+                particles.push(createParticle(e.clientX, e.clientY, false));
+            }
+        });
+
+        function animateSparkles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (sparklesEnabled) {
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    p.alpha -= 0.02;
+
+                    if (p.alpha <= 0) {
+                        particles.splice(i, 1);
+                        continue;
+                    }
+
+                    ctx.save();
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    // Draw 4-point diamond star
+                    ctx.moveTo(p.x, p.y - p.size);
+                    ctx.lineTo(p.x + p.size * 0.35, p.y - p.size * 0.35);
+                    ctx.lineTo(p.x + p.size, p.y);
+                    ctx.lineTo(p.x + p.size * 0.35, p.y + p.size * 0.35);
+                    ctx.lineTo(p.x, p.y + p.size);
+                    ctx.lineTo(p.x - p.size * 0.35, p.y + p.size * 0.35);
+                    ctx.lineTo(p.x - p.size, p.y);
+                    ctx.lineTo(p.x - p.size * 0.35, p.y - p.size * 0.35);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+            requestAnimationFrame(animateSparkles);
+        }
+
+        function toggleSparkles() {
+            sparklesEnabled = !sparklesEnabled;
+            playChime('click');
+            if (!sparklesEnabled) particles = [];
+            showToast('Particle Shader', sparklesEnabled ? 'Magic sparkle trail ON ✨' : 'Sparkle trail OFF', '🪄');
+        }
+
+        /* -----------------------------------------------------------
+           INITIALIZE ALL MODULES ON LOAD
+        ----------------------------------------------------------- */
+        window.onload = function () {
+            animateStats();
+            renderGadgets();
+            initMemoryGame();
+            renderCatcherPods();
+            animateSparkles();
+        };
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KawaiiTech OS // Pastel Cybernetics & Arcade</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Orbitron (Futuristic) & Quicksand (Cute/Legible) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for crisp icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tone.js for procedural cyber-cute sound effects (no external audio URLs) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cyber: ['Orbitron', 'sans-serif'],
+                        cute: ['Quicksand', 'sans-serif'],
+                    },
+                    colors: {
+                        lavenderBlush: '#FFF0F5',
+                        softPink: '#FFE4E9',
+                        pastelPink: '#FFB6C1',
+                        hotPink: '#FF69B4',
+                        deepRose: '#DB2777',
+                        cyberText: '#4A2535',
+                    },
+                    boxShadow: {
+                        'neon-pink': '0 0 15px rgba(255, 105, 180, 0.45), 0 0 30px rgba(255, 182, 193, 0.3)',
+                        'glass': '0 8px 32px 0 rgba(255, 105, 180, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Cyber-Pastel Styling & Keyframe Animations */
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #FFF0F5;
+            color: #4A2535;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(255, 182, 193, 0.35) 0%, transparent 40%),
+                radial-gradient(circle at 85% 75%, rgba(255, 105, 180, 0.2) 0%, transparent 45%),
+                linear-gradient(rgba(255, 182, 193, 0.18) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 182, 193, 0.18) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1.5px solid rgba(255, 255, 255, 0.95);
+        }
+
+        .glass-pink {
+            background: rgba(255, 240, 245, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255, 182, 193, 0.6);
+        }
+
+        /* Floating & Rotating Cyber Rings */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-14px) rotate(2deg); }
+        }
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes spinReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(255, 105, 180, 0.4); }
+            50% { box-shadow: 0 0 28px rgba(255, 105, 180, 0.8); }
+        }
+
+        .animate-float { animation: floatSlow 4.5s ease-in-out infinite; }
+        .animate-spin-slow { animation: spinSlow 24s linear infinite; }
+        .animate-spin-reverse { animation: spinReverse 18s linear infinite; }
+        .animate-pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
+
+        /* 3D Card Flip for Memory Game */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+
+        /* Quantum Bug Pop Animation */
+        @keyframes popUp {
+            0% { transform: translateY(100%) scale(0.5); opacity: 0; }
+            70% { transform: translateY(-8%) scale(1.08); opacity: 1; }
+            100% { transform: translateY(0%) scale(1); opacity: 1; }
+        }
+        .bug-pop {
+            animation: popUp 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #FFF0F5; }
+        ::-webkit-scrollbar-thumb { background: #FFB6C1; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FF69B4; }
+
+        /* Sparkle Particle Canvas */
+        #sparkle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 40;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-hotPink selection:text-white">
+
+    <!-- Interactive Sparkle Particle Canvas -->
+    <canvas id="sparkle-canvas"></canvas>
+
+    <!-- Custom Toast / Message Notification (Replaces alert()) -->
+    <div id="cyber-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="glass-panel px-5 py-3.5 rounded-2xl shadow-neon-pink border-2 border-hotPink flex items-center gap-3">
+            <span id="toast-icon" class="text-xl">✨</span>
+            <div>
+                <p id="toast-title" class="font-cyber text-xs font-bold text-hotPink uppercase tracking-wider">System Notice</p>
+                <p id="toast-msg" class="text-sm font-semibold text-cyberText">Action completed!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         1. STICKY NAVIGATION BAR
+    ========================================================== -->
+    <header class="sticky top-0 z-40 px-4 pt-3 pb-2">
+        <nav class="max-w-6xl mx-auto glass-panel rounded-full px-5 py-3 shadow-glass flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#home" class="flex items-center gap-2.5 group">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-hotPink to-pastelPink flex items-center justify-center text-white shadow-neon-pink group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-cat text-lg"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-cyber font-black text-base sm:text-lg tracking-wider bg-gradient-to-r from-hotPink to-deepRose bg-clip-text text-transparent">
+                        KAWAII<span class="text-cyberText">TECH</span>
+                    </span>
+                    <span class="text-[10px] font-bold tracking-widest text-hotPink uppercase -mt-1">OS v4.2 // NYA</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <ul class="hidden md:flex items-center gap-2">
+                <li><a href="#home" data-nav="home" class="nav-link active px-4 py-2 rounded-full text-sm font-bold transition-all bg-hotPink text-white shadow-neon-pink">Home</a></li>
+                <li><a href="#gadgets" data-nav="gadgets" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-cyberText hover:bg-softPink hover:text-hotPink transition-all">Tech Lab</a></li>
+                <li><a href="#arcade" data-nav="arcade" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-cyberText hover:bg-softPink hover:text-hotPink transition-all">Cyber Arcade</a></li>
+                <li><a href="#ai-buddy" data-nav="ai-buddy" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-cyberText hover:bg-softPink hover:text-hotPink transition-all">A.I. Meow-Bot</a></li>
+                <li><a href="#contact" data-nav="contact" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-cyberText hover:bg-softPink hover:text-hotPink transition-all">Sync</a></li>
+            </ul>
+
+            <!-- Interactive Controls: Sparkle Toggle + Sound Toggle + Mobile Menu -->
+            <div class="flex items-center gap-2">
+                <button id="sparkle-toggle" onclick="toggleSparkles()" title="Toggle Sparkle Field" class="p-2.5 rounded-full bg-white border border-pastelPink text-hotPink hover:bg-hotPink hover:text-white transition-all shadow-sm">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+                <button id="sound-toggle" onclick="toggleSound()" title="Toggle Cyber Audio" class="p-2.5 rounded-full bg-white border border-pastelPink text-hotPink hover:bg-hotPink hover:text-white transition-all shadow-sm">
+                    <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+                </button>
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-full bg-hotPink text-white shadow-neon-pink">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Dropdown Nav -->
+        <div id="mobile-menu" class="hidden md:hidden max-w-6xl mx-auto mt-2 glass-panel rounded-3xl p-4 shadow-glass">
+            <ul class="flex flex-col gap-2 text-center">
+                <li><a href="#home" onclick="toggleMobileMenu()" class="block py-2.5 rounded-2xl font-bold text-cyberText hover:bg-softPink hover:text-hotPink">Home / Core</a></li>
+                <li><a href="#gadgets" onclick="toggleMobileMenu()" class="block py-2.5 rounded-2xl font-bold text-cyberText hover:bg-softPink hover:text-hotPink">Kawaii Tech Lab</a></li>
+                <li><a href="#arcade" onclick="toggleMobileMenu()" class="block py-2.5 rounded-2xl font-bold text-cyberText hover:bg-softPink hover:text-hotPink">Cyber Arcade</a></li>
+                <li><a href="#ai-buddy" onclick="toggleMobileMenu()" class="block py-2.5 rounded-2xl font-bold text-cyberText hover:bg-softPink hover:text-hotPink">A.I. Meow-Bot</a></li>
+                <li><a href="#contact" onclick="toggleMobileMenu()" class="block py-2.5 rounded-2xl font-bold text-cyberText hover:bg-softPink hover:text-hotPink">Neural Sync</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 space-y-24 pb-20 pt-6">
+
+        <!-- =========================================================
+             2. HERO SECTION WITH FLOATING CYBER ANIMATIONS & STATS
+        ========================================================== -->
+        <section id="home" class="scroll-mt-28 pt-4">
+            <div class="glass-panel rounded-[2.5rem] p-6 sm:p-12 shadow-glass relative overflow-hidden">
+                <!-- Decorative Background Glow Blobs -->
+                <div class="absolute -top-20 -right-20 w-72 h-72 bg-pastelPink/40 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-20 w-80 h-80 bg-hotPink/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+                    <!-- Left Hero Copy -->
+                    <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-pastelPink shadow-sm">
+                            <span class="w-2.5 h-2.5 rounded-full bg-hotPink animate-ping"></span>
+                            <span class="font-cyber text-xs font-bold tracking-widest text-hotPink uppercase">Quantum Pastel Network Online</span>
+                        </div>
+
+                        <h1 class="font-cyber text-3xl sm:text-5xl lg:text-6xl font-black leading-tight text-cyberText">
+                            Future Tech, <br>
+                            <span class="bg-gradient-to-r from-hotPink via-pink-500 to-rose-400 bg-clip-text text-transparent">
+                                Ultra-Cute Core.
+                            </span>
+                        </h1>
+
+                        <p class="text-base sm:text-lg font-medium text-cyberText/80 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                            Welcome to <strong class="text-hotPink">KawaiiTech OS</strong>—where next-generation quantum robotics, holographic wearables, and wholesome A.I. companions live in soft pink harmony.
+                        </p>
+
+                        <!-- CTA Buttons -->
+                        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                            <a href="#arcade" onclick="playChime('powerup')" class="px-7 py-3.5 rounded-full bg-gradient-to-r from-hotPink to-pink-500 text-white font-cyber text-sm font-bold tracking-wider shadow-neon-pink hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-gamepad"></i> PLAY CYBER ARCADE
+                            </a>
+                            <a href="#gadgets" onclick="playChime('click')" class="px-7 py-3.5 rounded-full bg-white text-hotPink border-2 border-pastelPink font-cyber text-sm font-bold tracking-wider hover:bg-softPink hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-microchip"></i> EXPLORE TECH LAB
+                            </a>
+                        </div>
+
+                        <!-- Interactive Stat Counters -->
+                        <div class="grid grid-cols-3 gap-3 sm:gap-5 pt-4">
+                            <div onclick="boostStat('stat-cuteness', 99.9)" class="cursor-pointer glass-pink rounded-2xl p-3.5 text-center hover:border-hotPink transition-all group">
+                                <p class="font-cyber text-xl sm:text-2xl font-black text-hotPink group-hover:scale-110 transition-transform"><span id="stat-cuteness" data-target="99.9">0</span>%</p>
+                                <p class="text-xs font-bold text-cyberText/75 uppercase tracking-wide mt-0.5">Kawaii Purity</p>
+                            </div>
+                            <div onclick="boostStat('stat-qubits', 4096)" class="cursor-pointer glass-pink rounded-2xl p-3.5 text-center hover:border-hotPink transition-all group">
+                                <p class="font-cyber text-xl sm:text-2xl font-black text-hotPink group-hover:scale-110 transition-transform"><span id="stat-qubits" data-target="4096">0</span></p>
+                                <p class="text-xs font-bold text-cyberText/75 uppercase tracking-wide mt-0.5">Nyan-Qubits</p>
+                            </div>
+                            <div onclick="boostStat('stat-bots', 128)" class="cursor-pointer glass-pink rounded-2xl p-3.5 text-center hover:border-hotPink transition-all group">
+                                <p class="font-cyber text-xl sm:text-2xl font-black text-hotPink group-hover:scale-110 transition-transform"><span id="stat-bots" data-target="128">0</span>K</p>
+                                <p class="text-xs font-bold text-cyberText/75 uppercase tracking-wide mt-0.5">Active Meow-Bots</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Hero Mascot Hologram -->
+                    <div class="lg:col-span-5 flex items-center justify-center relative py-6">
+                        <div class="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center">
+                            <!-- Outer Rotating Cyber Ring -->
+                            <div class="absolute inset-0 rounded-full border-2 border-dashed border-hotPink/60 animate-spin-slow"></div>
+                            <!-- Middle Counter-Rotating Ring -->
+                            <div class="absolute inset-4 rounded-full border-2 border-pastelPink animate-spin-reverse"></div>
+                            <!-- Inner Glowing Core -->
+                            <div class="w-48 h-48 sm:w-56 sm:h-56 rounded-full bg-gradient-to-b from-white to-softPink border-4 border-white shadow-neon-pink flex flex-col items-center justify-center animate-float relative cursor-pointer" onclick="petMascot()">
+                                <!-- Custom Cute Cyber-Cat SVG Mascot -->
+                                <svg class="w-32 h-32 sm:w-36 sm:h-36 drop-shadow-md" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Cyber Ears -->
+                                    <path d="M45 85 L35 30 L82 58 Z" fill="#FFB6C1" stroke="#FF69B4" stroke-width="5" stroke-linejoin="round"/>
+                                    <path d="M155 85 L165 30 L118 58 Z" fill="#FFB6C1" stroke="#FF69B4" stroke-width="5" stroke-linejoin="round"/>
+                                    <path d="M48 76 L43 44 L72 60 Z" fill="#FFF0F5"/>
+                                    <path d="M152 76 L157 44 L128 60 Z" fill="#FFF0F5"/>
+                                    <!-- Antenna Heart -->
+                                    <line x1="100" y1="48" x2="100" y2="24" stroke="#FF69B4" stroke-width="4" stroke-linecap="round"/>
+                                    <circle cx="100" cy="20" r="7" fill="#FF69B4"/>
+                                    <!-- Head Chassis -->
+                                    <rect x="36" y="52" width="128" height="106" rx="52" fill="#FFFFFF" stroke="#FF69B4" stroke-width="5"/>
+                                    <!-- Holographic Visor Screen -->
+                                    <rect x="52" y="74" width="96" height="52" rx="24" fill="#FFF0F5" stroke="#FFB6C1" stroke-width="3"/>
+                                    <!-- Happy Digital Eyes -->
+                                    <path d="M68 98 Q78 86 88 98" stroke="#FF69B4" stroke-width="5" stroke-linecap="round" fill="none"/>
+                                    <path d="M112 98 Q122 86 132 98" stroke="#FF69B4" stroke-width="5" stroke-linecap="round" fill="none"/>
+                                    <!-- Rosy LED Cheeks -->
+                                    <ellipse cx="66" cy="112" rx="8" ry="4" fill="#FFB6C1"/>
+                                    <ellipse cx="134" cy="112" rx="8" ry="4" fill="#FFB6C1"/>
+                                    <!-- Cute Kitty Mouth -->
+                                    <path d="M92 112 Q96 118 100 112 Q104 118 108 112" stroke="#FF69B4" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+                                    <!-- Bow Tie -->
+                                    <path d="M84 162 L100 154 L100 170 Z" fill="#FF69B4"/>
+                                    <path d="M116 162 L100 154 L100 170 Z" fill="#FF69B4"/>
+                                    <circle cx="100" cy="162" r="5" fill="#FFF0F5"/>
+                                </svg>
+                                <span class="text-[11px] font-cyber font-bold text-hotPink bg-white/90 px-3 py-0.5 rounded-full border border-pastelPink -mt-1">
+                                    TAP TO PAT ♥
+                                </span>
+                            </div>
+
+                            <!-- Floating Orbiting Badges -->
+                            <div class="absolute -top-2 right-4 glass-panel px-3 py-1.5 rounded-full shadow-sm border border-pastelPink flex items-center gap-1.5 animate-bounce">
+                                <span class="text-sm">🌸</span>
+                                <span class="font-cyber text-[10px] font-bold text-hotPink">AI-9000</span>
+                            </div>
+                            <div class="absolute bottom-2 -left-2 glass-panel px-3 py-1.5 rounded-full shadow-sm border border-pastelPink flex items-center gap-1.5 animate-pulse">
+                                <span class="text-sm">⚡</span>
+                                <span class="font-cyber text-[10px] font-bold text-hotPink">100% CUTE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             3. INTERACTIVE 'KAWAII TECH LAB' SHOWCASE SECTION
+        ========================================================== -->
+        <section id="gadgets" class="scroll-mt-28 space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <span class="inline-block px-4 py-1 rounded-full bg-white border border-pastelPink font-cyber text-xs font-bold text-hotPink uppercase tracking-widest">
+                    Hardware & Wearables
+                </span>
+                <h2 class="font-cyber text-2xl sm:text-4xl font-black text-cyberText">
+                    Kawaii <span class="text-hotPink">Tech Lab</span>
+                </h2>
+                <p class="text-sm sm:text-base font-medium text-cyberText/75">
+                    Inspect our latest pastel-engineered hardware prototypes. Click any gadget to launch its holographic blueprint & specs!
+                </p>
+            </div>
+
+            <!-- Gadget Cards Grid -->
+            <div id="gadget-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated dynamically via JavaScript for clean interactive modals -->
+            </div>
+        </section>
+
+        <!-- =========================================================
+             4. 'CYBER ARCADE' WITH TWO PLAYABLE MINI-GAMES
+        ========================================================== -->
+        <section id="arcade" class="scroll-mt-28 space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <span class="inline-block px-4 py-1 rounded-full bg-white border border-pastelPink font-cyber text-xs font-bold text-hotPink uppercase tracking-widest">
+                    Interactive Simulation Deck
+                </span>
+                <h2 class="font-cyber text-2xl sm:text-4xl font-black text-cyberText">
+                    Pastel <span class="text-hotPink">Cyber Arcade</span>
+                </h2>
+                <p class="text-sm sm:text-base font-medium text-cyberText/75">
+                    Train your neural reflexes with two built-in mini-games! Switch modules anytime.
+                </p>
+
+                <!-- Game Switcher Tabs -->
+                <div class="inline-flex p-1.5 rounded-full glass-panel shadow-sm border border-pastelPink mt-2">
+                    <button id="tab-memory" onclick="switchArcadeGame('memory')" class="px-5 py-2.5 rounded-full font-cyber text-xs sm:text-sm font-bold transition-all bg-hotPink text-white shadow-neon-pink">
+                        <i class="fa-solid fa-clone mr-1.5"></i> Cyber Cat Memory
+                    </button>
+                    <button id="tab-catcher" onclick="switchArcadeGame('catcher')" class="px-5 py-2.5 rounded-full font-cyber text-xs sm:text-sm font-bold transition-all text-cyberText hover:text-hotPink">
+                        <i class="fa-solid fa-bolt mr-1.5"></i> Quantum Bug Catcher
+                    </button>
+                </div>
+            </div>
+
+            <!-- GAME 1: CYBER CAT MEMORY MATCH -->
+            <div id="game-memory-container" class="glass-panel rounded-[2rem] p-6 sm:p-8 shadow-glass border-2 border-white">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6 border-b border-pastelPink/50">
+                    <div>
+                        <h3 class="font-cyber text-xl font-bold text-hotPink flex items-center gap-2">
+                            <span>🐱</span> Cyber Cat Memory Match
+                        </h3>
+                        <p class="text-xs sm:text-sm font-semibold text-cyberText/75">Pair all matching quantum icons in record time!</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="px-4 py-2 rounded-2xl bg-white border border-pastelPink text-center">
+                            <span class="block text-[10px] font-bold uppercase text-cyberText/60">Moves</span>
+                            <span id="mem-moves" class="font-cyber text-base font-black text-hotPink">0</span>
+                        </div>
+                        <div class="px-4 py-2 rounded-2xl bg-white border border-pastelPink text-center">
+                            <span class="block text-[10px] font-bold uppercase text-cyberText/60">Time</span>
+                            <span id="mem-timer" class="font-cyber text-base font-black text-hotPink">00:00</span>
+                        </div>
+                        <button onclick="initMemoryGame()" class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-hotPink to-pink-500 text-white font-cyber text-xs font-bold shadow-neon-pink hover:scale-105 active:scale-95 transition-all">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> RESET
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4x4 Memory Card Grid -->
+                <div id="memory-grid" class="grid grid-cols-4 gap-3 sm:gap-4 max-w-xl mx-auto pt-6">
+                    <!-- Cards generated by JS -->
+                </div>
+            </div>
+
+            <!-- GAME 2: QUANTUM BUG CATCHER (REFLEX WHACK-A-GLITCH) -->
+            <div id="game-catcher-container" class="hidden glass-panel rounded-[2rem] p-6 sm:p-8 shadow-glass border-2 border-white">
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-4 pb-6 border-b border-pastelPink/50">
+                    <div>
+                        <h3 class="font-cyber text-xl font-bold text-hotPink flex items-center gap-2">
+                            <span>🐰</span> Quantum Bug Catcher
+                        </h3>
+                        <p class="text-xs sm:text-sm font-semibold text-cyberText/75">Tap the glitch-bunnies (🐰) & pixel hearts (💖) before they warp! Avoid bombs (💣)!</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-center gap-2.5">
+                        <!-- Difficulty Selector -->
+                        <select id="catcher-difficulty" onchange="resetCatcherGame()" class="px-3.5 py-2 rounded-2xl bg-white border border-pastelPink font-cyber text-xs font-bold text-cyberText focus:outline-none focus:border-hotPink">
+                            <option value="easy">Chill Mode</option>
+                            <option value="normal" selected>Turbo Pink</option>
+                            <option value="hyper">Hyper Nyan</option>
+                        </select>
+
+                        <div class="px-3.5 py-1.5 rounded-2xl bg-white border border-pastelPink text-center">
+                            <span class="block text-[10px] font-bold uppercase text-cyberText/60">Score</span>
+                            <span id="catch-score" class="font-cyber text-base font-black text-hotPink">0</span>
+                        </div>
+                        <div class="px-3.5 py-1.5 rounded-2xl bg-white border border-pastelPink text-center">
+                            <span class="block text-[10px] font-bold uppercase text-cyberText/60">Combo</span>
+                            <span id="catch-combo" class="font-cyber text-base font-black text-deepRose">x1</span>
+                        </div>
+                        <div class="px-3.5 py-1.5 rounded-2xl bg-white border border-pastelPink text-center">
+                            <span class="block text-[10px] font-bold uppercase text-cyberText/60">Time</span>
+                            <span id="catch-timer" class="font-cyber text-base font-black text-hotPink">30s</span>
+                        </div>
+
+                        <button id="catch-start-btn" onclick="startCatcherGame()" class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-hotPink to-pink-500 text-white font-cyber text-xs font-bold shadow-neon-pink hover:scale-105 active:scale-95 transition-all">
+                            <i class="fa-solid fa-play mr-1"></i> START
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3x3 Holographic Portal Grid -->
+                <div id="catcher-grid" class="grid grid-cols-3 gap-3 sm:gap-5 max-w-md mx-auto pt-6">
+                    <!-- 9 Holographic Pods generated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             5. INTERACTIVE 'A.I. MEOW-BOT' CHAT ASSISTANT
+        ========================================================== -->
+        <section id="ai-buddy" class="scroll-mt-28 space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <span class="inline-block px-4 py-1 rounded-full bg-white border border-pastelPink font-cyber text-xs font-bold text-hotPink uppercase tracking-widest">
+                    Neural Companion v4.2
+                </span>
+                <h2 class="font-cyber text-2xl sm:text-4xl font-black text-cyberText">
+                    Chat with <span class="text-hotPink">A.I. Meow-Bot</span>
+                </h2>
+                <p class="text-sm sm:text-base font-medium text-cyberText/75">
+                    Ask our sentient pastel hologram for futuristic advice, tech fortunes, or wholesome cyber-wisdom!
+                </p>
+            </div>
+
+            <div class="max-w-3xl mx-auto glass-panel rounded-[2rem] shadow-glass border-2 border-white overflow-hidden">
+                <!-- Chat Header -->
+                <div class="bg-gradient-to-r from-hotPink to-pink-400 px-6 py-4 text-white flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-full bg-white text-hotPink flex items-center justify-center text-xl shadow-md">
+                            🤖
+                        </div>
+                        <div>
+                            <h3 class="font-cyber text-sm sm:text-base font-bold tracking-wide">MEOW-BOT // HOLO-CORE</h3>
+                            <p class="text-xs text-white/90 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-green-300 animate-pulse"></span> Online & Purring at 4.8 GHz
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="clearChat()" class="text-xs font-cyber bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full transition-all">
+                        Clear Log
+                    </button>
+                </div>
+
+                <!-- Chat Messages Viewport -->
+                <div id="chat-messages" class="h-80 overflow-y-auto p-5 space-y-4 bg-white/50">
+                    <!-- Initial Greeting -->
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 rounded-full bg-softPink border border-pastelPink flex items-center justify-center shrink-0 text-base">🐱</div>
+                        <div class="bg-white border border-pastelPink rounded-2xl rounded-tl-none px-4 py-3 shadow-sm max-w-[82%]">
+                            <p class="text-sm font-semibold text-cyberText">
+                                Konnichi-nya! ✨ I am <span class="text-hotPink font-bold">Meow-Bot</span>, your quantum pastel companion. Tap a quick prompt below or type a message to begin!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Preset Prompt Chips -->
+                <div class="px-5 py-2.5 bg-lavenderBlush/80 border-t border-pastelPink/50 flex items-center gap-2 overflow-x-auto">
+                    <span class="text-[11px] font-cyber font-bold text-hotPink shrink-0">PROMPTS:</span>
+                    <button onclick="sendQuickPrompt('Tell me my cyber fortune 🔮')" class="shrink-0 text-xs font-bold bg-white hover:bg-hotPink hover:text-white text-cyberText border border-pastelPink px-3 py-1.5 rounded-full transition-all">
+                        🔮 Cyber Fortune
+                    </button>
+                    <button onclick="sendQuickPrompt('Recommend a cute gadget 🎧')" class="shrink-0 text-xs font-bold bg-white hover:bg-hotPink hover:text-white text-cyberText border border-pastelPink px-3 py-1.5 rounded-full transition-all">
+                        🎧 Recommend Gadget
+                    </button>
+                    <button onclick="sendQuickPrompt('Give me a motivation boost 💖')" class="shrink-0 text-xs font-bold bg-white hover:bg-hotPink hover:text-white text-cyberText border border-pastelPink px-3 py-1.5 rounded-full transition-all">
+                        💖 Motivation Boost
+                    </button>
+                    <button onclick="sendQuickPrompt('Tell a robot cat joke 😹')" class="shrink-0 text-xs font-bold bg-white hover:bg-hotPink hover:text-white text-cyberText border border-pastelPink px-3 py-1.5 rounded-full transition-all">
+                        😹 Cyber Joke
+                    </button>
+                </div>
+
+                <!-- Input Bar -->
+                <form onsubmit="handleChatSubmit(event)" class="p-4 bg-white flex items-center gap-3 border-t border-pastelPink/50">
+                    <input id="chat-input" type="text" placeholder="Type a message to Meow-Bot..." autocomplete="off"
+                        class="flex-1 px-4 py-3 rounded-full bg-lavenderBlush border border-pastelPink text-sm font-semibold text-cyberText placeholder-cyberText/45 focus:outline-none focus:border-hotPink focus:ring-2 focus:ring-hotPink/20">
+                    <button type="submit" class="px-6 py-3 rounded-full bg-gradient-to-r from-hotPink to-pink-500 text-white font-cyber text-xs font-bold shadow-neon-pink hover:scale-105 active:scale-95 transition-all">
+                        SEND <i class="fa-solid fa-paper-plane ml-1"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             6. NEURAL SYNC / CONTACT & FOOTER
+        ========================================================== -->
+        <section id="contact" class="scroll-mt-28">
+            <div class="glass-panel rounded-[2rem] p-6 sm:p-10 shadow-glass border-2 border-white">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-4">
+                        <span class="inline-block px-4 py-1 rounded-full bg-white border border-pastelPink font-cyber text-xs font-bold text-hotPink uppercase tracking-widest">
+                            Join The Network
+                        </span>
+                        <h2 class="font-cyber text-2xl sm:text-3xl font-black text-cyberText">
+                            Sync With <span class="text-hotPink">KawaiiTech</span>
+                        </h2>
+                        <p class="text-sm font-medium text-cyberText/75 leading-relaxed">
+                            Subscribe to our quantum holo-bulletin for early beta access to pastel robotics, new arcade cartridges, and cute desktop companions.
+                        </p>
+                        <div class="flex items-center gap-3 pt-2">
+                            <a href="#home" onclick="showToast('Discord Portal', 'Connecting to KawaiiTech Holo-Lounge! ✨')" class="w-10 h-10 rounded-full bg-white border border-pastelPink text-hotPink hover:bg-hotPink hover:text-white flex items-center justify-center transition-all shadow-sm">
+                                <i class="fa-brands fa-discord"></i>
+                            </a>
+                            <a href="#home" onclick="showToast('GitHub Core', 'Open-source pastel shaders ready! 🌸')" class="w-10 h-10 rounded-full bg-white border border-pastelPink text-hotPink hover:bg-hotPink hover:text-white flex items-center justify-center transition-all shadow-sm">
+                                <i class="fa-brands fa-github"></i>
+                            </a>
+                            <a href="#home" onclick="showToast('Holo-Stream', 'Live cyber-synth radio tuned! 🎧')" class="w-10 h-10 rounded-full bg-white border border-pastelPink text-hotPink hover:bg-hotPink hover:text-white flex items-center justify-center transition-all shadow-sm">
+                                <i class="fa-brands fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <form onsubmit="handleSubscribe(event)" class="glass-pink rounded-3xl p-6 space-y-4">
+                        <div>
+                            <label class="block font-cyber text-xs font-bold text-hotPink uppercase mb-1.5">Cyber Handle / Name</label>
+                            <input type="text" required placeholder="e.g., PixelPrincess99" class="w-full px-4 py-2.5 rounded-2xl bg-white border border-pastelPink text-sm font-semibold focus:outline-none focus:border-hotPink">
+                        </div>
+                        <div>
+                            <label class="block font-cyber text-xs font-bold text-hotPink uppercase mb-1.5">Holo-Mail Address</label>
+                            <input type="email" required placeholder="you@kawaiitech.io" class="w-full px-4 py-2.5 rounded-2xl bg-white border border-pastelPink text-sm font-semibold focus:outline-none focus:border-hotPink">
+                        </div>
+                        <button type="submit" class="w-full py-3 rounded-2xl bg-gradient-to-r from-hotPink to-pink-500 text-white font-cyber text-xs font-bold tracking-wider shadow-neon-pink hover:scale-[1.02] active:scale-98 transition-all">
+                            ESTABLISH NEURAL LINK ✨
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Pastel Futuristic Footer -->
+    <footer class="glass-panel border-t border-pastelPink/60 py-8 px-4 text-center">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="text-lg">🌸</span>
+                <span class="font-cyber text-sm font-bold text-cyberText">KAWAII<span class="text-hotPink">TECH</span> OS</span>
+            </div>
+            <p class="text-xs font-semibold text-cyberText/70">
+                Engineered with 💖, Quantum Pastel Shaders & Pure Wholesomeness • © 2026
+            </p>
+            <a href="#home" class="text-xs font-cyber font-bold text-hotPink hover:underline">
+                BACK TO TOP ↑
+            </a>
+        </div>
+    </footer>
+
+    <!-- =========================================================
+         GADGET HOLOGRAPHIC MODAL
+    ========================================================== -->
+    <div id="gadget-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-cyberText/30 backdrop-blur-sm">
+        <div class="glass-panel max-w-lg w-full rounded-[2rem] p-6 sm:p-8 shadow-neon-pink border-2 border-white relative animate-float">
+            <button onclick="closeGadgetModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-softPink text-hotPink hover:bg-hotPink hover:text-white flex items-center justify-center transition-all">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-body" class="space-y-4">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         COMBINED JAVASCRIPT APPLICATION LOGIC
+    ========================================================== -->
+    <script>
+        /* -----------------------------------------------------------
+           1. AUDIO SYNTHESIZER (Tone.js - Cute Cyber Blips)
+        ----------------------------------------------------------- */
+        let soundEnabled = true;
+        let synth = null;
+
+        function initAudio() {
+            if (!synth && typeof Tone !== 'undefined') {
+                synth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "sine" },
+                    envelope: { attack: 0.01, decay: 0.15, sustain: 0.1, release: 0.3 }
+                }).toDestination();
+                synth.volume.value = -10;
+            }
+        }
+
+        function playChime(type = 'click') {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (Tone.context.state !== 'running') Tone.start();
+                const now = Tone.now();
+                if (type === 'click') {
+                    synth.triggerAttackRelease("C6", "32n", now);
+                } else if (type === 'match') {
+                    synth.triggerAttackRelease(["E5", "G5", "B5", "E6"], "16n", now);
+                } else if (type === 'powerup') {
+                    synth.triggerAttackRelease("C5", "32n", now);
+                    synth.triggerAttackRelease("E5", "32n", now + 0.06);
+                    synth.triggerAttackRelease("G5", "32n", now + 0.12);
+                    synth.triggerAttackRelease("C6", "16n", now + 0.18);
+                } else if (type === 'bonk') {
+                    synth.triggerAttackRelease("G3", "16n", now);
+                }
+            } catch (e) {
+                // Fallback silently if browser blocks audio before gesture
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            icon.className = soundEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark';
+            showToast('Audio Core', soundEnabled ? 'Cyber-chimes activated! 🎵' : 'Audio muted 🔇');
+        }
+
+        /* -----------------------------------------------------------
+           2. CUSTOM TOAST NOTIFICATIONS & NAVIGATION
+        ----------------------------------------------------------- */
+        let toastTimeout;
+        function showToast(title, message, icon = '✨') {
+            const toast = document.getElementById('cyber-toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-msg').textContent = message;
+            document.getElementById('toast-icon').textContent = icon;
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Scroll Spy for Active Navigation Links
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = 'home';
+            sections.forEach(sec => {
+                const top = window.scrollY;
+                const offset = sec.offsetTop - 160;
+                if (top >= offset) current = sec.getAttribute('id');
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('bg-hotPink', 'text-white', 'shadow-neon-pink');
+                link.classList.add('text-cyberText');
+                if (link.dataset.nav === current) {
+                    link.classList.add('bg-hotPink', 'text-white', 'shadow-neon-pink');
+                    link.classList.remove('text-cyberText');
+                }
+            });
+        });
+
+        /* -----------------------------------------------------------
+           3. HERO STATS & INTERACTIVE MASCOT
+        ----------------------------------------------------------- */
+        function animateStats() {
+            const counters = [
+                { id: 'stat-cuteness', end: 99.9, decimals: 1 },
+                { id: 'stat-qubits', end: 4096, decimals: 0 },
+                { id: 'stat-bots', end: 128, decimals: 0 }
+            ];
+            counters.forEach(item => {
+                const el = document.getElementById(item.id);
+                let start = 0;
+                const duration = 1400;
+                const stepTime = 25;
+                const steps = duration / stepTime;
+                const increment = item.end / steps;
+                const timer = setInterval(() => {
+                    start += increment;
+                    if (start >= item.end) {
+                        el.textContent = item.end.toFixed(item.decimals);
+                        clearInterval(timer);
+                    } else {
+                        el.textContent = start.toFixed(item.decimals);
+                    }
+                }, stepTime);
+            });
+        }
+
+        function boostStat(id, base) {
+            playChime('powerup');
+            const el = document.getElementById(id);
+            const current = parseFloat(el.textContent);
+            const boosted = id === 'stat-cuteness' ? Math.min(100, (current + 0.1)).toFixed(1) : Math.round(current + 12);
+            el.textContent = boosted;
+            showToast('Overclocked!', 'Quantum telemetry boosted! 💖', '⚡');
+        }
+
+        const mascotQuotes = [
+            "Purr-ogramming at 100% efficiency! 🐱✨",
+            "Headpats detected! Dopamine circuits charged! 💖",
+            "Did you know? Pink photons travel faster in KawaiiTech OS! 🌸",
+            "Nya~ Ready to beat the high score in the Cyber Arcade? 🎮"
+        ];
+        function petMascot() {
+            playChime('match');
+            const quote = mascotQuotes[Math.floor(Math.random() * mascotQuotes.length)];
+            showToast('Neko-Core v4.2', quote, '🐾');
+            spawnBurst(window.innerWidth / 2, window.innerHeight / 3);
+        }
+
+        /* -----------------------------------------------------------
+           4. KAWAII TECH LAB GADGETS & MODAL
+        ----------------------------------------------------------- */
+        const gadgetsData = [
+            {
+                id: 'neko-pods',
+                name: 'Neko-Beat Holo-Phones',
+                tag: 'Acoustic AI',
+                icon: '🎧',
+                power: '98% Noise Cancel',
+                desc: 'Cat-ear wireless headphones with adaptive mood-light emitters and spatial 8D pastel soundscapes.',
+                specs: ['Quantum Bluetooth 7.0', '48-Hour Solar Ribbon Battery', 'Real-time Meow Translator']
+            },
+            {
+                id: 'sakura-deck',
+                name: 'Sakura Pocket Cyberdeck',
+                tag: 'Quantum CPU',
+                icon: '💻',
+                power: '128 TFLOPS',
+                desc: 'Ultra-slim mechanical micro-terminal with marshmallow tactile switches and floating pink holographic display.',
+                specs: ['Cherry-Blossom Optical Keys', 'Zero-Latency Neural Link', 'Self-Cooling Cryo-Gel Chassis']
+            },
+            {
+                id: 'heart-drone',
+                name: 'Cupid-01 Companion Drone',
+                tag: 'Autonomous Bot',
+                icon: '🛸',
+                power: '360° LiDAR',
+                desc: 'Palm-sized levitating drone that follows you around, snaps aesthetic portraits, and projects mini lightshows.',
+                specs: ['Whisper-Quiet MagLev Thrusters', '4K Kawaii Filter Lens', 'Auto-Return Charging Nest']
+            },
+            {
+                id: 'visor-lens',
+                name: 'Prism-X Smart Visor',
+                tag: 'AR Optics',
+                icon: '🥽',
+                power: '16K Retina AR',
+                desc: 'Featherweight rose-tinted smart glasses overlaying real-time quest markers, translator bubbles, and sparkles.',
+                specs: ['Eye-Tracking Gesture UI', 'UV + Blue-Light Shield', 'Customizable HUD Themes']
+            },
+            {
+                id: 'tamago-core',
+                name: 'Tama-Cube Pocket Synth',
+                tag: 'Bio-Pet Core',
+                icon: '🧊',
+                power: 'Sentient AI',
+                desc: 'A translucent crystal cube housing a virtual cyber-pet that evolves based on your daily hydration and steps.',
+                specs: ['Haptic Purr Feedback', 'NFC Friend-Sync', '1,024 Pixel-Art Evolutions']
+            },
+            {
+                id: 'laser-wand',
+                name: 'Starlight Stylus Wand',
+                tag: 'Holo-Sculpting',
+                icon: '🪄',
+                power: 'Sub-mm Precision',
+                desc: 'Draw 3D neon-pink hard-light sculptures directly in mid-air with zero-gravity photonic ink.',
+                specs: ['Pressure-Sensitive Star Tip', 'Instant 3D Print Export', '16.8M Pastel Color Palette']
+            }
+        ];
+
+        function renderGadgets() {
+            const grid = document.getElementById('gadget-grid');
+            grid.innerHTML = gadgetsData.map(g => `
+                <div onclick="openGadgetModal('${g.id}')" class="cursor-pointer glass-panel rounded-3xl p-6 shadow-glass border-2 border-white hover:border-hotPink hover:-translate-y-1.5 transition-all group flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-full bg-softPink text-hotPink font-cyber text-[10px] font-bold uppercase tracking-wider">
+                                ${g.tag}
+                            </span>
+                            <span class="text-xs font-bold text-cyberText/60">${g.power}</span>
+                        </div>
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-white to-softPink border border-pastelPink flex items-center justify-center text-3xl mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                            ${g.icon}
+                        </div>
+                        <h3 class="font-cyber text-lg font-bold text-cyberText group-hover:text-hotPink transition-colors mb-2">
+                            ${g.name}
+                        </h3>
+                        <p class="text-sm font-medium text-cyberText/75 leading-relaxed">
+                            ${g.desc}
+                        </p>
+                    </div>
+                    <div class="pt-5 mt-4 border-t border-pastelPink/40 flex items-center justify-between text-xs font-cyber font-bold text-hotPink">
+                        <span>INSPECT BLUEPRINT</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openGadgetModal(id) {
+            playChime('powerup');
+            const g = gadgetsData.find(item => item.id === id);
+            if (!g) return;
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-2xl bg-softPink border-2 border-hotPink flex items-center justify-center text-4xl shadow-neon-pink">
+                        ${g.icon}
+                    </div>
+                    <div>
+                        <span class="px-3 py-0.5 rounded-full bg-hotPink text-white font-cyber text-[10px] font-bold uppercase">${g.tag}</span>
+                        <h3 class="font-cyber text-xl sm:text-2xl font-black text-cyberText mt-1">${g.name}</h3>
+                    </div>
+                </div>
+                <p class="text-sm font-semibold text-cyberText/80 leading-relaxed bg-white/80 p-4 rounded-2xl border border-pastelPink">
+                    ${g.desc}
+                </p>
+                <div>
+                    <h4 class="font-cyber text-xs font-bold text-hotPink uppercase tracking-wider mb-2">Quantum Specifications:</h4>
+                    <ul class="space-y-2">
+                        ${g.specs.map(s => `
+                            <li class="flex items-center gap-2 text-sm font-bold text-cyberText">
+                                <span class="text-hotPink">✦</span> ${s}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                <button onclick="closeGadgetModal(); showToast('Blueprint Saved', '${g.name} synced to your holo-inventory!', '${g.icon}')" class="w-full py-3 rounded-2xl bg-gradient-to-r from-hotPink to-pink-500 text-white font-cyber text-xs font-bold tracking-wider shadow-neon-pink hover:scale-[1.02] transition-all">
+                    EQUIP TO INVENTORY ✨
+                </button>
+            `;
+            const modal = document.getElementById('gadget-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeGadgetModal() {
+            playChime('click');
+            const modal = document.getElementById('gadget-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        /* -----------------------------------------------------------
+           5. CYBER ARCADE SWITCHER & GAME 1: MEMORY MATCH
+        ----------------------------------------------------------- */
+        function switchArcadeGame(game) {
+            playChime('click');
+            const memContainer = document.getElementById('game-memory-container');
+            const catchContainer = document.getElementById('game-catcher-container');
+            const tabMem = document.getElementById('tab-memory');
+            const tabCatch = document.getElementById('tab-catcher');
+
+            if (game === 'memory') {
+                memContainer.classList.remove('hidden');
+                catchContainer.classList.add('hidden');
+                tabMem.className = 'px-5 py-2.5 rounded-full font-cyber text-xs sm:text-sm font-bold transition-all bg-hotPink text-white shadow-neon-pink';
+                tabCatch.className = 'px-5 py-2.5 rounded-full font-cyber text-xs sm:text-sm font-bold transition-all text-cyberText hover:text-hotPink';
+            } else {
+                memContainer.classList.add('hidden');
+                catchContainer.classList.remove('hidden');
+                tabCatch.className = 'px-5 py-2.5 rounded-full font-cyber text-xs sm:text-sm font-bold transition-all bg-hotPink text-white shadow-neon-pink';
+                tabMem.className = 'px-5 py-2.5 rounded-full font-cyber text-xs sm:text-sm font-bold transition-all text-cyberText hover:text-hotPink';
+            }
+        }
+
+        const memoryIcons = ['🐱', '🤖', '💖', '🛸', '🎧', '🌸', '⚡', '💎'];
+        let memCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let memMoves = 0;
+        let memSeconds = 0;
+        let memTimerInterval = null;
+        let memLock = false;
+
+        function initMemoryGame() {
+            clearInterval(memTimerInterval);
+            memMoves = 0;
+            memSeconds = 0;
+            matchedPairs = 0;
+            flippedCards = [];
+            memLock = false;
+
+            document.getElementById('mem-moves').textContent = '0';
+            document.getElementById('mem-timer').textContent = '00:00';
+
+            const deck = [...memoryIcons, ...memoryIcons].sort(() => Math.random() - 0.5);
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = deck.map((icon, index) => `
+                <div onclick="flipMemoryCard(this, '${icon}')" data-icon="${icon}" class="mem-card aspect-square perspective-1000 cursor-pointer select-none">
+                    <div class="card-inner relative w-full h-full transform-style-3d">
+                        <!-- Card Front (Hidden Face) -->
+                        <div class="absolute inset-0 backface-hidden rounded-2xl bg-gradient-to-br from-hotPink to-pastelPink border-2 border-white shadow-sm flex items-center justify-center text-white text-xl sm:text-2xl font-cyber">
+                            ✦
+                        </div>
+                        <!-- Card Back (Revealed Icon) -->
+                        <div class="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl bg-white border-2 border-hotPink shadow-neon-pink flex items-center justify-center text-3xl sm:text-4xl">
+                            ${icon}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function flipMemoryCard(cardEl, icon) {
+            if (memLock || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+
+            // Start timer on first move
+            if (memMoves === 0 && flippedCards.length === 0 && memSeconds === 0 && !memTimerInterval) {
+                memTimerInterval = setInterval(() => {
+                    memSeconds++;
+                    const mins = String(Math.floor(memSeconds / 60)).padStart(2, '0');
+                    const secs = String(memSeconds % 60).padStart(2, '0');
+                    document.getElementById('mem-timer').textContent = `${mins}:${secs}`;
+                }, 1000);
+            }
+
+            playChime('click');
+            cardEl.classList.add('flipped');
+            cardEl.querySelector('.card-inner').classList.add('rotate-y-180');
+            flippedCards.push({ el: cardEl, icon });
+
+            if (flippedCards.length === 2) {
+                memMoves++;
+                document.getElementById('mem-moves').textContent = memMoves;
+                memLock = true;
+
+                const [first, second] = flippedCards;
+                if (first.icon === second.icon) {
+                    playChime('match');
+                    first.el.classList.add('matched');
+                    second.el.classList.add('matched');
+                    flippedCards = [];
+                    memLock = false;
+                    matchedPairs++;
+
+                    if (matchedPairs === memoryIcons.length) {
+                        clearInterval(memTimerInterval);
+                        memTimerInterval = null;
+                        setTimeout(() => {
+                            playChime('powerup');
+                            showToast('Memory Sync Complete!', `Cleared in ${memMoves} moves! 🏆`, '🎉');
+                        }, 300);
+                    }
+                } else {
+                    setTimeout(() => {
+                        first.el.classList.remove('flipped');
+                        first.el.querySelector('.card-inner').classList.remove('rotate-y-180');
+                        second.el.classList.remove('flipped');
+                        second.el.querySelector('.card-inner').classList.remove('rotate-y-180');
+                        flippedCards = [];
+                        memLock = false;
+                    }, 750);
+                }
+            }
+        }
+
+        /* -----------------------------------------------------------
+           6. GAME 2: QUANTUM BUG CATCHER
+        ----------------------------------------------------------- */
+        let catchScore = 0;
+        let catchCombo = 1;
+        let catchTimeLeft = 30;
+        let catchRunning = false;
+        let catchTimerId = null;
+        let catchSpawnId = null;
+
+        function renderCatcherPods() {
+            const grid = document.getElementById('catcher-grid');
+            grid.innerHTML = Array.from({ length: 9 }).map((_, idx) => `
+                <div onclick="whackPod(${idx})" id="pod-${idx}" class="aspect-square rounded-3xl bg-gradient-to-b from-white to-softPink border-2 border-pastelPink shadow-inner flex items-center justify-center relative overflow-hidden cursor-pointer select-none hover:border-hotPink transition-colors">
+                    <div class="w-3/4 h-3 bg-hotPink/20 rounded-full absolute bottom-3 blur-[1px]"></div>
+                    <span id="pod-entity-${idx}" class="text-4xl sm:text-5xl z-10"></span>
+                </div>
+            `).join('');
+        }
+
+        function resetCatcherGame() {
+            clearInterval(catchTimerId);
+            clearTimeout(catchSpawnId);
+            catchRunning = false;
+            catchScore = 0;
+            catchCombo = 1;
+            catchTimeLeft = 30;
+            document.getElementById('catch-score').textContent = '0';
+            document.getElementById('catch-combo').textContent = 'x1';
+            document.getElementById('catch-timer').textContent = '30s';
+            document.getElementById('catch-start-btn').innerHTML = '<i class="fa-solid fa-play mr-1"></i> START';
+            for (let i = 0; i < 9; i++) {
+                const entity = document.getElementById(`pod-entity-${i}`);
+                if (entity) {
+                    entity.textContent = '';
+                    entity.dataset.type = '';
+                }
+            }
+        }
+
+        function startCatcherGame() {
+            if (catchRunning) {
+                resetCatcherGame();
+                return;
+            }
+            resetCatcherGame();
+            playChime('powerup');
+            catchRunning = true;
+            document.getElementById('catch-start-btn').innerHTML = '<i class="fa-solid fa-stop mr-1"></i> STOP';
+
+            catchTimerId = setInterval(() => {
+                catchTimeLeft--;
+                document.getElementById('catch-timer').textContent = `${catchTimeLeft}s`;
+                if (catchTimeLeft <= 0) {
+                    const finalScore = catchScore;
+                    resetCatcherGame();
+                    playChime('match');
+                    showToast('Time Up!', `Final Quantum Score: ${finalScore} pts! 🌟`, '🏆');
+                }
+            }, 1000);
+
+            spawnQuantumEntity();
+        }
+
+        function spawnQuantumEntity() {
+            if (!catchRunning) return;
+            const diff = document.getElementById('catcher-difficulty').value;
+            const speed = diff === 'easy' ? 1100 : diff === 'normal' ? 800 : 580;
+
+            // Clear previous entities
+            for (let i = 0; i < 9; i++) {
+                const el = document.getElementById(`pod-entity-${i}`);
+                el.textContent = '';
+                el.dataset.type = '';
+                el.classList.remove('bug-pop');
+            }
+
+            const podIndex = Math.floor(Math.random() * 9);
+            const target = document.getElementById(`pod-entity-${podIndex}`);
+
+            const roll = Math.random();
+            if (roll < 0.62) {
+                target.textContent = '🐰';
+                target.dataset.type = 'bunny';
+            } else if (roll < 0.85) {
+                target.textContent = '💖';
+                target.dataset.type = 'heart';
+            } else {
+                target.textContent = '💣';
+                target.dataset.type = 'bomb';
+            }
+
+            void target.offsetWidth; // trigger reflow for animation
+            target.classList.add('bug-pop');
+
+            catchSpawnId = setTimeout(spawnQuantumEntity, speed);
+        }
+
+        function whackPod(idx) {
+            if (!catchRunning) return;
+            const target = document.getElementById(`pod-entity-${idx}`);
+            const type = target.dataset.type;
+            if (!type) return;
+
+            if (type === 'bunny') {
+                playChime('click');
+                catchScore += 10 * catchCombo;
+                catchCombo = Math.min(8, catchCombo + 1);
+            } else if (type === 'heart') {
+                playChime('match');
+                catchScore += 25 * catchCombo;
+                catchCombo = Math.min(8, catchCombo + 1);
+            } else if (type === 'bomb') {
+                playChime('bonk');
+                catchScore = Math.max(0, catchScore - 20);
+                catchCombo = 1;
+                showToast('Glitch Bomb!', 'Combo reset! Watch out for 💣', '💥');
+            }
+
+            target.textContent = '';
+            target.dataset.type = '';
+            document.getElementById('catch-score').textContent = catchScore;
+            document.getElementById('catch-combo').textContent = `x${catchCombo}`;
+        }
+
+        /* -----------------------------------------------------------
+           7. A.I. MEOW-BOT INTERACTIVE CHAT
+        ----------------------------------------------------------- */
+        const botKnowledge = [
+            { keys: ['fortune', 'future', 'predict'], reply: '🔮 Scanning your aura... Good news! A wave of creative breakthroughs and pastel luck is heading your way today, nya~!' },
+            { keys: ['gadget', 'recommend', 'tech', 'device'], reply: '🎧 I highly recommend the **Neko-Beat Holo-Phones** in our Tech Lab! They translate cat purrs into lo-fi synth beats!' },
+            { keys: ['motivation', 'boost', 'sad', 'tired', 'love'], reply: '💖 Remember: even the brightest quantum supercomputers need a recharge cycle! You are doing amazing, sparkling human! ✨' },
+            { keys: ['joke', 'funny', 'laugh'], reply: '😹 Why did the cyber-cat sit on the quantum router? Because it wanted to keep an eye on the *mouse* in every dimension!' },
+            { keys: ['game', 'arcade', 'play'], reply: '🎮 Try **Quantum Bug Catcher** on Hyper Nyan difficulty if you think your reflexes are faster than light-speed!' },
+            { keys: ['hello', 'hi', 'hey', 'nya'], reply: 'Konnichi-nya! 🌸 My neural circuits are always happy to chat with you!' }
+        ];
+
+        function appendChatMessage(sender, text) {
+            const container = document.getElementById('chat-messages');
+            const isUser = sender === 'user';
+            const msgHtml = isUser ? `
+                <div class="flex items-start justify-end gap-3">
+                    <div class="bg-gradient-to-r from-hotPink to-pink-500 text-white rounded-2xl rounded-tr-none px-4 py-3 shadow-sm max-w-[80%]">
+                        <p class="text-sm font-semibold">${escapeHtml(text)}</p>
+                    </div>
+                    <div class="w-9 h-9 rounded-full bg-white border border-pastelPink flex items-center justify-center shrink-0 text-sm">🌸</div>
+                </div>
+            ` : `
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-full bg-softPink border border-pastelPink flex items-center justify-center shrink-0 text-base">🐱</div>
+                    <div class="bg-white border border-pastelPink rounded-2xl rounded-tl-none px-4 py-3 shadow-sm max-w-[82%]">
+                        <p class="text-sm font-semibold text-cyberText">${text}</p>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', msgHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function generateBotReply(userText) {
+            const lower = userText.toLowerCase();
+            for (const entry of botKnowledge) {
+                if (entry.keys.some(k => lower.includes(k))) {
+                    return entry.reply;
+                }
+            }
+            const fallbacks = [
+                "✨ Processing through my 4,096 Nyan-Qubits... That sounds super futuristic! Tell me more, nya~!",
+                "🌸 My pastel sensors agree 100%! Have you checked out the holographic blueprints in the Tech Lab yet?",
+                "🤖 Beep-boop-purr! Logging that into the KawaiiTech central memory core! 💖"
+            ];
+            return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+        }
+
+        function sendQuickPrompt(promptText) {
+            playChime('click');
+            appendChatMessage('user', promptText);
+            setTimeout(() => {
+                playChime('match');
+                appendChatMessage('bot', generateBotReply(promptText));
+            }, 450);
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            input.value = '';
+            sendQuickPrompt(text);
+        }
+
+        function clearChat() {
+            playChime('click');
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-full bg-softPink border border-pastelPink flex items-center justify-center shrink-0 text-base">🐱</div>
+                    <div class="bg-white border border-pastelPink rounded-2xl rounded-tl-none px-4 py-3 shadow-sm max-w-[82%]">
+                        <p class="text-sm font-semibold text-cyberText">Memory cache cleared! ✨ Ready for fresh futuristic questions, nya~!</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleSubscribe(e) {
+            e.preventDefault();
+            playChime('powerup');
+            e.target.reset();
+            showToast('Neural Link Active!', 'Welcome to the KawaiiTech OS Insider Network! 💖', '🌸');
+        }
+
+        /* -----------------------------------------------------------
+           8. INTERACTIVE SPARKLE PARTICLE ENGINE
+        ----------------------------------------------------------- */
+        let sparklesEnabled = true;
+        const canvas = document.getElementById('sparkle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function createParticle(x, y, burst = false) {
+            const colors = ['#FF69B4', '#FFB6C1', '#FFC0CB', '#FFFFFF'];
+            return {
+                x,
+                y,
+                size: Math.random() * (burst ? 6 : 4) + 2,
+                speedX: (Math.random() - 0.5) * (burst ? 5 : 1.2),
+                speedY: (Math.random() - 0.5) * (burst ? 5 : 1.2) - 0.5,
+                alpha: 1,
+                color: colors[Math.floor(Math.random() * colors.length)]
+            };
+        }
+
+        function spawnBurst(x, y) {
+            if (!sparklesEnabled) return;
+            for (let i = 0; i < 18; i++) {
+                particles.push(createParticle(x, y, true));
+            }
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            if (sparklesEnabled && Math.random() < 0.35) {
+                particles.push(createParticle(e.clientX, e.clientY, false));
+            }
+        });
+
+        function animateSparkles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (sparklesEnabled) {
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    p.alpha -= 0.02;
+
+                    if (p.alpha <= 0) {
+                        particles.splice(i, 1);
+                        continue;
+                    }
+
+                    ctx.save();
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    // Draw 4-point diamond star
+                    ctx.moveTo(p.x, p.y - p.size);
+                    ctx.lineTo(p.x + p.size * 0.35, p.y - p.size * 0.35);
+                    ctx.lineTo(p.x + p.size, p.y);
+                    ctx.lineTo(p.x + p.size * 0.35, p.y + p.size * 0.35);
+                    ctx.lineTo(p.x, p.y + p.size);
+                    ctx.lineTo(p.x - p.size * 0.35, p.y + p.size * 0.35);
+                    ctx.lineTo(p.x - p.size, p.y);
+                    ctx.lineTo(p.x - p.size * 0.35, p.y - p.size * 0.35);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+            requestAnimationFrame(animateSparkles);
+        }
+
+        function toggleSparkles() {
+            sparklesEnabled = !sparklesEnabled;
+            playChime('click');
+            if (!sparklesEnabled) particles = [];
+            showToast('Particle Shader', sparklesEnabled ? 'Magic sparkle trail ON ✨' : 'Sparkle trail OFF', '🪄');
+        }
+
+        /* -----------------------------------------------------------
+           INITIALIZE ALL MODULES ON LOAD
+        ----------------------------------------------------------- */
+        window.onload = function () {
+            animateStats();
+            renderGadgets();
+            initMemoryGame();
+            renderCatcherPods();
+            animateSparkles();
+        };
+    </script>
+</body>
+</html>
